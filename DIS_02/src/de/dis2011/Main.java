@@ -16,6 +16,9 @@ public class Main {
 	private static EntryDAO<House> housesDAO;
 	private static EntryDAO<Apartment> aptDAO;
 	
+	private static boolean authentifiedAsAgent = false;
+	private static boolean authentifiedAsAdmin = false;
+	
 
 	public static void main(String[] args) {
 		agentsDAO = new EstateAgentDAO();
@@ -57,20 +60,97 @@ public class Main {
 		}
 	}
 	
-
 	public static void showEstateMenu() {
-		//Menüoptionen
+		final int LOGIN = 0;
+		final int HOUSES = 1;
+		final int APARTMENTS = 2;
+		final int BACK = 3;
+		
+		Menu maklerMenu = new Menu("Manage Estates");
+		maklerMenu.addEntry("Login", LOGIN);
+		maklerMenu.addEntry("Manage Houses", HOUSES);
+		maklerMenu.addEntry("Manage Apartments", APARTMENTS);
+		maklerMenu.addEntry("Back to Main Menu", BACK);
+		
+		while(true) {
+			int response = maklerMenu.show();
+			if (response != LOGIN && response != BACK && !authentifiedAsAgent){
+				System.out.println("Please, login as agent to manages estates");
+				continue;
+			}
+			
+			switch(response) {
+				case LOGIN:
+					showAgentLogin();
+					break;
+				case HOUSES:
+					showHousesMenu();
+					break;
+				case APARTMENTS:
+					showApartmentsMenu();
+					break;
+				case BACK:
+					return;
+			}
+		}
+	}
+	
+	private static void showAgentLogin() {
+		String login = FormUtil.readString("Login");
+		String password = FormUtil.readString("Password");
+		
+		authentifiedAsAgent = true; // TODO: add here check of password 
+		
+		if(authentifiedAsAgent){
+			System.out.println("Congrats! You are logged in now");
+		} else {
+			System.out.println("Sorry! Bad password or login");
+		}
+	}
+
+	private static void showApartmentsMenu() {
+		final int NEW_APT = 0;
+		final int DELETE_APT = 1;
+		final int UPDATE_APT = 2;
+		final int BACK = 3;
+		
+		Menu maklerMenu = new Menu("Manage Houses");
+		maklerMenu.addEntry("New Apartment", NEW_APT);
+		maklerMenu.addEntry("Delete Apartment", DELETE_APT);
+		maklerMenu.addEntry("Update Apartment", UPDATE_APT);
+		maklerMenu.addEntry("Back to Estates Menu", BACK);
+		
+		//Verarbeite Eingabe
+		while(true) {
+			int response = maklerMenu.show();
+			
+			switch(response) {
+				case NEW_APT:
+					newApt();
+					break;
+				case DELETE_APT:
+					deleteApt();
+					break;
+				case UPDATE_APT:
+					updateApt();
+					break;
+				case BACK:
+					return;
+			}
+		}
+	}
+
+	public static void showHousesMenu() {
 		final int NEW_HOUSE = 0;
 		final int DELETE_HOUSE = 1;
 		final int UPDATE_HOUSE = 2;
 		final int BACK = 3;
 		
-		//Maklerverwaltungsmenü
-		Menu maklerMenu = new Menu("Manage Estates");
+		Menu maklerMenu = new Menu("Manage Houses");
 		maklerMenu.addEntry("New House", NEW_HOUSE);
 		maklerMenu.addEntry("Delete House", DELETE_HOUSE);
 		maklerMenu.addEntry("Update House", UPDATE_HOUSE);
-		maklerMenu.addEntry("Back to Main Menu", BACK);
+		maklerMenu.addEntry("Back to Estates Menu", BACK);
 		
 		//Verarbeite Eingabe
 		while(true) {
@@ -94,27 +174,49 @@ public class Main {
 
 	public static void showAgentMenu() {
 		//Menüoptionen
-		final int NEW_AGENT = 0;
-		final int DELETE_AGENT = 0;
-		final int CHANGE_AGENT = 0;
-		final int BACK = 1;
+		final int LOGIN = 0;
+		final int NEW_AGENT = 1;
+		final int DELETE_AGENT = 2;
+		final int CHANGE_AGENT = 3;
+		final int BACK = 4;
 		
 		//Maklerverwaltungsmenü
 		Menu maklerMenu = new Menu("Manage Estate Agents");
+		maklerMenu.addEntry("Login", LOGIN);
 		maklerMenu.addEntry("New Agent", NEW_AGENT);
 		maklerMenu.addEntry("Back to Main Menu", BACK);
 		
 		//Verarbeite Eingabe
 		while(true) {
 			int response = maklerMenu.show();
+			if(response != LOGIN && response != BACK && !authentifiedAsAdmin){
+				System.out.println("Please, login as root to manage agents");
+				continue;
+			}
 			
 			switch(response) {
+				case LOGIN:
+					showAdminLogin();
+					break;
 				case NEW_AGENT:
 					newMakler();
 					break;
 				case BACK:
 					return;
 			}
+		}
+	}
+	
+	private static void showAdminLogin() {
+		String login = FormUtil.readString("Login");
+		String password = FormUtil.readString("Password");
+		
+		authentifiedAsAdmin = login.equals("root") && password.equals("root");
+		
+		if(authentifiedAsAdmin){
+			System.out.println("Congrats! You are logged in now");
+		} else {
+			System.out.println("Sorry! Bad password or login");
 		}
 	}
 	
@@ -141,7 +243,7 @@ public class Main {
 		m.setSqArea(FormUtil.readDouble("Area"));
 		m.setFloors(FormUtil.readInt("Floors"));
 		m.setPrice(FormUtil.readDouble("Price"));
-		m.setGarden(FormUtil.readBoolean("Garden"));
+		m.setGarden(FormUtil.readBoolean("Garden (y/n)"));
 
 		housesDAO.insert(m);
 		System.out.println("Added House with ID " + m.getId());
@@ -153,7 +255,34 @@ public class Main {
 	}
 
 	private static void deleteHouse() {
+		// TODO Auto-generated method stub	
+	}
+	
+	private static void updateApt() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	private static void deleteApt() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void newApt() {
+		Apartment m = new Apartment();
+		
+		m.setCity(FormUtil.readString("City"));
+		m.setPostalCode(FormUtil.readString("Postal Code"));
+		m.setStreet(FormUtil.readString("Street"));
+		m.setStreetNum(FormUtil.readString("StreetNum"));
+		m.setSqArea(FormUtil.readDouble("Area"));
+		m.setFloor(FormUtil.readInt("Floors"));
+		m.setRent(FormUtil.readDouble("Price"));
+		m.setRooms(FormUtil.readInt("Rooms"));
+		m.setBalcony(FormUtil.readBoolean("Balcony(y/n)"));
+		m.setBuiltinKitchen(FormUtil.readBoolean("Built-in Kitchen(y/n)"));
+
+		aptDAO.insert(m);
+		System.out.println("Added House with ID " + m.getId());
 	}
 }
