@@ -5,8 +5,6 @@
    login varchar(40) NOT NULL UNIQUE,
    password varchar(40));
 
-   drop table estate;
-
  CREATE TABLE estate (
   id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1, NO CACHE) PRIMARY KEY,
   city varchar(255),
@@ -15,8 +13,6 @@
   street_number varchar (20),
   square_area double);
 
-  
-drop table manages;
  CREATE TABLE manages (
  	id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1, NO CACHE) PRIMARY KEY,
  	estate_id integer,
@@ -24,8 +20,6 @@ drop table manages;
  	foreign key (estate_id) references estate(id),
 	foreign key (estate_agent_id) references estate_agent(id)
  );
-
- drop table house;
  
  CREATE TABLE house (
   id integer not null primary key,
@@ -34,7 +28,7 @@ drop table manages;
   garden char(1),
   foreign key (id) references estate(id));
 
-  CREATE TABLE apartment(
+ CREATE TABLE apartment(
   id integer not null primary key,
   floor integer,
   rent DECIMAL(10, 2),
@@ -80,8 +74,6 @@ Create table sells (
 	foreign key (person_id) references person(id)
 );
 
-
-select * from tenancy_contract;
 
 Create table rent (
 	id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1, NO CACHE) PRIMARY KEY, 
