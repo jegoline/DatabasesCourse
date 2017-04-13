@@ -9,7 +9,7 @@ import java.sql.Statement;
 import de.dis2011.data.Apartment;
 import de.dis2011.data.DB2ConnectionManager;
 
-public class ApartmentDAO implements EntryDAO<Apartment>{
+public class ApartmentJDBC implements EntryDAO<Apartment>{
 	
 	@Override
 	public Apartment load (int id) {

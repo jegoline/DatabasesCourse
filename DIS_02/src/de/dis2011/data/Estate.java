@@ -7,6 +7,7 @@ public abstract class Estate {
 	private String street;
 	private String streetNum;
 	private double sqArea;
+	private int managedByAgent;
 
 	public int getId() {
 		return id;
