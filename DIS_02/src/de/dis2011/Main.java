@@ -68,9 +68,9 @@ public class Main {
 
 		Menu maklerMenu = new Menu("Manage Estates");
 		maklerMenu.addEntry("Login", LOGIN);
-		maklerMenu.addEntry("Manage Houses", HOUSES);
-		maklerMenu.addEntry("Manage Apartments", APARTMENTS);
-		maklerMenu.addEntry("Back to Main Menu", BACK);
+		maklerMenu.addEntry("Manage houses", HOUSES);
+		maklerMenu.addEntry("Manage apartments", APARTMENTS);
+		maklerMenu.addEntry("Back to main menu", BACK);
 
 		while (true) {
 			int response = maklerMenu.show();
@@ -107,6 +107,7 @@ public class Main {
 			authentifiedAgent = agent;
 			System.out.println("Hello " + authentifiedAgent.getName() + "!");
 		} else {
+			authentifiedAgent = null;
 			System.out.println("Sorry! Bad password or login");
 		}
 	}
@@ -117,11 +118,11 @@ public class Main {
 		final int UPDATE_APT = 2;
 		final int BACK = 3;
 
-		Menu maklerMenu = new Menu("Manage Houses");
-		maklerMenu.addEntry("New Apartment", NEW_APT);
-		maklerMenu.addEntry("Delete Apartment", DELETE_APT);
-		maklerMenu.addEntry("Update Apartment", UPDATE_APT);
-		maklerMenu.addEntry("Back to Estates Menu", BACK);
+		Menu maklerMenu = new Menu("Manage apartments");
+		maklerMenu.addEntry("New apartment", NEW_APT);
+		maklerMenu.addEntry("Delete apartment", DELETE_APT);
+		maklerMenu.addEntry("Update apartment", UPDATE_APT);
+		maklerMenu.addEntry("Back to estates menu", BACK);
 
 		// Verarbeite Eingabe
 		while (true) {
@@ -150,12 +151,12 @@ public class Main {
 		final int ALL = 3;
 		final int BACK = 4;
 
-		Menu maklerMenu = new Menu("Manage Houses");
-		maklerMenu.addEntry("New House", NEW_HOUSE);
-		maklerMenu.addEntry("Delete House", DELETE_HOUSE);
-		maklerMenu.addEntry("Update House", UPDATE_HOUSE);
+		Menu maklerMenu = new Menu("Manage houses");
+		maklerMenu.addEntry("New house", NEW_HOUSE);
+		maklerMenu.addEntry("Delete house", DELETE_HOUSE);
+		maklerMenu.addEntry("Update house", UPDATE_HOUSE);
 		maklerMenu.addEntry("Show all managed by me", ALL);
-		maklerMenu.addEntry("Back to Estates Menu", BACK);
+		maklerMenu.addEntry("Back to estates Menu", BACK);
 
 		// Verarbeite Eingabe
 		while (true) {
@@ -237,7 +238,7 @@ public class Main {
 		m.setPassword(FormUtil.readString("Passwort"));
 		agentsDAO.insert(m);
 
-		System.out.println("Added Estate Agent with ID " + m.getId());
+		System.out.println("Agent with ID " + m.getId() + " was added");
 	}
 
 	public static void newHouse() {
@@ -253,7 +254,7 @@ public class Main {
 		m.setGarden(FormUtil.readBoolean("Garden (y/n)"));
 
 		housesDAO.insert(m);
-		System.out.println("Added House with ID " + m.getId());
+		System.out.println("House with ID " + m.getId() + " was added");
 	}
 
 	private static void updateHouse() {
@@ -270,28 +271,47 @@ public class Main {
 		m.setGarden(FormUtil.readBoolean("Garden (y/n)"));
 
 		housesDAO.update(m);
-		System.out.println("Updated house with ID " + m.getId());
+		System.out.println("House with ID " + m.getId() + " was updated");
 	}
 
 	private static void deleteHouse() {
 		House m = new House();
 		m.setId(FormUtil.readInt("ID"));
-		
+
 		housesDAO.delete(m);
-		System.out.println("Deleted house with ID " + m.getId());
+		System.out.println("House with ID " + m.getId() + " was deleted");
 	}
-	
+
 	private static void showAllMyHouses() {
 		// TODO Auto-generated method stub
 	}
 
 	private static void updateApt() {
-		// TODO Auto-generated method stub
+		Apartment m = new Apartment();
+
+		m.setId(FormUtil.readInt("ID"));
+		m.setCity(FormUtil.readString("City"));
+		m.setPostalCode(FormUtil.readString("Postal Code"));
+		m.setStreet(FormUtil.readString("Street"));
+		m.setStreetNum(FormUtil.readString("StreetNum"));
+		m.setSqArea(FormUtil.readDouble("Area"));
+		m.setFloor(FormUtil.readInt("Floor"));
+		m.setRent(FormUtil.readDouble("Rent"));
+		m.setRooms(FormUtil.readInt("Rooms"));
+		m.setBalcony(FormUtil.readBoolean("Balcony(y/n)"));
+		m.setBuiltinKitchen(FormUtil.readBoolean("Built-in Kitchen(y/n)"));
+
+		aptDAO.update(m);
+		System.out.println("Apartment with ID " + m.getId() + " was updated");
 
 	}
 
 	private static void deleteApt() {
-		// TODO Auto-generated method stub
+		Apartment m = new Apartment();
+		m.setId(FormUtil.readInt("ID"));
+
+		aptDAO.delete(m);
+		System.out.println("Appartment with ID " + m.getId() + " was deleted");
 
 	}
 
@@ -303,13 +323,13 @@ public class Main {
 		m.setStreet(FormUtil.readString("Street"));
 		m.setStreetNum(FormUtil.readString("StreetNum"));
 		m.setSqArea(FormUtil.readDouble("Area"));
-		m.setFloor(FormUtil.readInt("Floors"));
-		m.setRent(FormUtil.readDouble("Price"));
+		m.setFloor(FormUtil.readInt("Floor"));
+		m.setRent(FormUtil.readDouble("Rent"));
 		m.setRooms(FormUtil.readInt("Rooms"));
 		m.setBalcony(FormUtil.readBoolean("Balcony(y/n)"));
 		m.setBuiltinKitchen(FormUtil.readBoolean("Built-in Kitchen(y/n)"));
 
 		aptDAO.insert(m);
-		System.out.println("Added House with ID " + m.getId());
+		System.out.println("Apartment with ID " + m.getId() + " was added");
 	}
 }
