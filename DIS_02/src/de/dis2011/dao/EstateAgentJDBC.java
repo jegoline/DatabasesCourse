@@ -13,68 +13,70 @@ public class EstateAgentJDBC implements EstateAgentDAO {
 
 	@Override
 	public EstateAgent load(int id) {
+		Connection con = DB2ConnectionManager.getInstance().getConnection();
+		PreparedStatement pstmt = null;
 		try {
-			// Hole Verbindung
-			Connection con = DB2ConnectionManager.getInstance().getConnection();
+			try {
+				String selectSQL = "SELECT * FROM estate_agent WHERE id = ?";
+				pstmt = con.prepareStatement(selectSQL);
+				pstmt.setInt(1, id);
 
-			// Erzeuge Anfrage
-			String selectSQL = "SELECT * FROM estate_agent WHERE id = ?";
-			PreparedStatement pstmt = con.prepareStatement(selectSQL);
-			pstmt.setInt(1, id);
-
-			// Führe Anfrage aus
-			ResultSet rs = pstmt.executeQuery();
-			if (rs.next()) {
-				EstateAgent ts = new EstateAgent();
-				ts.setId(id);
-				ts.setName(rs.getString("name"));
-				ts.setAddress(rs.getString("address"));
-				ts.setLogin(rs.getString("login"));
-				ts.setPassword(rs.getString("password"));
-
-				rs.close();
-				pstmt.close();
-				return ts;
+				ResultSet rs = pstmt.executeQuery();
+				if (rs.next()) {
+					EstateAgent ts = new EstateAgent();
+					ts.setId(id);
+					ts.setName(rs.getString("name"));
+					ts.setAddress(rs.getString("address"));
+					ts.setLogin(rs.getString("login"));
+					ts.setPassword(rs.getString("password"));
+					rs.close();
+					return ts;
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				if (pstmt != null) {
+					pstmt.close();
+				}
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
 		return null;
 	}
 
 	@Override
 	public boolean insert(EstateAgent entry) {
-		// Hole Verbindung
+		assert entry.getId() == -1;
 		Connection con = DB2ConnectionManager.getInstance().getConnection();
-
+		PreparedStatement pstmt = null;
 		try {
-			// FC<ge neues Element hinzu, wenn das Objekt noch keine ID hat.
-			if (entry.getId() == -1) {
-				// Achtung, hier wird noch ein Parameter mitgegeben,
-				// damit spC$ter generierte IDs zurC<ckgeliefert werden!
+			try {
 				String insertSQL = "INSERT INTO estate_agent(name, address, login, password) VALUES (?, ?, ?, ?)";
+				pstmt = con.prepareStatement(insertSQL, Statement.RETURN_GENERATED_KEYS);
 
-				PreparedStatement pstmt = con.prepareStatement(insertSQL, Statement.RETURN_GENERATED_KEYS);
-
-				// Setze Anfrageparameter und fC<hre Anfrage aus
 				pstmt.setString(1, entry.getName());
 				pstmt.setString(2, entry.getAddress());
 				pstmt.setString(3, entry.getLogin());
 				pstmt.setString(4, entry.getPassword());
-				pstmt.executeUpdate();
 
-				// Hole die Id des engefC<gten Datensatzes
+				pstmt.executeUpdate();
 				ResultSet rs = pstmt.getGeneratedKeys();
 				if (rs.next()) {
 					entry.setId(rs.getInt(1));
 				}
-
 				rs.close();
-				pstmt.close();
 				return true;
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				if (pstmt != null) {
+					pstmt.close();
+				}
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
 		return false;
 	}
@@ -82,56 +84,91 @@ public class EstateAgentJDBC implements EstateAgentDAO {
 	@Override
 	public boolean update(EstateAgent entry) {
 		Connection con = DB2ConnectionManager.getInstance().getConnection();
+		PreparedStatement pstmt = null;
 		try {
-			String updateSQL = "UPDATE estate_agent SET name = ?, address = ?, login = ?, password = ? WHERE id = ?";
-			PreparedStatement pstmt = con.prepareStatement(updateSQL);
+			try {
+				String updateSQL = "UPDATE estate_agent SET name = ?, address = ?, login = ?, password = ? WHERE id = ?";
+				pstmt = con.prepareStatement(updateSQL);
 
-			// Setze Anfrage Parameter
-			pstmt.setString(1, entry.getName());
-			pstmt.setString(2, entry.getAddress());
-			pstmt.setString(3, entry.getLogin());
-			pstmt.setString(4, entry.getPassword());
-			pstmt.setInt(5, entry.getId());
-			pstmt.executeUpdate();
-
-			pstmt.close();
-			return true;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
+				pstmt.setString(1, entry.getName());
+				pstmt.setString(2, entry.getAddress());
+				pstmt.setString(3, entry.getLogin());
+				pstmt.setString(4, entry.getPassword());
+				pstmt.setInt(5, entry.getId());
+				pstmt.executeUpdate();
+				return true;
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				if (pstmt != null) {
+					pstmt.close();
+				}
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
+		return false;
 	}
 
 	@Override
 	public boolean delete(EstateAgent entry) {
+		Connection con = DB2ConnectionManager.getInstance().getConnection();
+		PreparedStatement pstmt = null;
+		
+		try {
+			try {
+				String selectSQL = "delete from estate_agent where id = ?";
+				pstmt = con.prepareStatement(selectSQL);
+				pstmt.setInt(1, entry.getId());
+				pstmt.executeUpdate();
+				return true;
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				if (pstmt != null) {
+					pstmt.close();
+				}
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 		return false;
 	}
 
 	@Override
 	public boolean loadByLogin(EstateAgent entity) {
 		Connection con = DB2ConnectionManager.getInstance().getConnection();
+		PreparedStatement pstmt = null;
 		try {
-			String selectSQL = "select id, name, address, login, password from estate_agent where login=?";
-			PreparedStatement pstmt = con.prepareStatement(selectSQL);
-			pstmt.setString(1, entity.getLogin());
-			
-			ResultSet result = pstmt.executeQuery();
-			
-			while (result.next()) {
-				assert entity.getLogin().equals(result.getString(4));
-				
-	            entity.setId(result.getInt(1));
-	            entity.setName(result.getString(2));
-	            entity.setAddress(result.getString(3));
-	            entity.setLogin(result.getString(4));
-	            entity.setPassword(result.getString(5));
-	        }
-			
-			pstmt.close();
-			return true;
-			
-		}catch (SQLException e){
-			e.printStackTrace();
+			try {
+				String selectSQL = "select id, name, address, login, password from estate_agent where login=?";
+				pstmt = con.prepareStatement(selectSQL);
+				pstmt.setString(1, entity.getLogin());
+
+				ResultSet result = pstmt.executeQuery();
+
+				while (result.next()) {
+					assert entity.getLogin().equals(result.getString(4));
+
+					entity.setId(result.getInt(1));
+					entity.setName(result.getString(2));
+					entity.setAddress(result.getString(3));
+					entity.setLogin(result.getString(4));
+					entity.setPassword(result.getString(5));
+				}
+
+				result.close();
+				return true;
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				if (pstmt != null) {
+					pstmt.close();
+				}
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
 		return false;
 	}

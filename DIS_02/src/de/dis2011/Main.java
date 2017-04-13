@@ -118,15 +118,15 @@ public class Main {
 		final int UPDATE_APT = 2;
 		final int BACK = 3;
 
-		Menu maklerMenu = new Menu("Manage apartments");
-		maklerMenu.addEntry("New apartment", NEW_APT);
-		maklerMenu.addEntry("Delete apartment", DELETE_APT);
-		maklerMenu.addEntry("Update apartment", UPDATE_APT);
-		maklerMenu.addEntry("Back to estates menu", BACK);
+		Menu menu = new Menu("Manage apartments");
+		menu.addEntry("New apartment", NEW_APT);
+		menu.addEntry("Delete apartment", DELETE_APT);
+		menu.addEntry("Update apartment", UPDATE_APT);
+		menu.addEntry("Back to estates menu", BACK);
 
 		// Verarbeite Eingabe
 		while (true) {
-			int response = maklerMenu.show();
+			int response = menu.show();
 
 			switch (response) {
 			case NEW_APT:
@@ -151,16 +151,16 @@ public class Main {
 		final int ALL = 3;
 		final int BACK = 4;
 
-		Menu maklerMenu = new Menu("Manage houses");
-		maklerMenu.addEntry("New house", NEW_HOUSE);
-		maklerMenu.addEntry("Delete house", DELETE_HOUSE);
-		maklerMenu.addEntry("Update house", UPDATE_HOUSE);
-		maklerMenu.addEntry("Show all managed by me", ALL);
-		maklerMenu.addEntry("Back to estates Menu", BACK);
+		Menu menu = new Menu("Manage houses");
+		menu.addEntry("New house", NEW_HOUSE);
+		menu.addEntry("Delete house", DELETE_HOUSE);
+		menu.addEntry("Update house", UPDATE_HOUSE);
+		menu.addEntry("Show all managed by me", ALL);
+		menu.addEntry("Back to estates Menu", BACK);
 
 		// Verarbeite Eingabe
 		while (true) {
-			int response = maklerMenu.show();
+			int response = menu.show();
 
 			switch (response) {
 			case NEW_HOUSE:
@@ -186,18 +186,20 @@ public class Main {
 		final int LOGIN = 0;
 		final int NEW_AGENT = 1;
 		final int DELETE_AGENT = 2;
-		final int CHANGE_AGENT = 3;
+		final int UPDATE_AGENT = 3;
 		final int BACK = 4;
 
 		// Maklerverwaltungsmenü
-		Menu maklerMenu = new Menu("Manage Estate Agents");
-		maklerMenu.addEntry("Login", LOGIN);
-		maklerMenu.addEntry("New Agent", NEW_AGENT);
-		maklerMenu.addEntry("Back to Main Menu", BACK);
+		Menu menu = new Menu("Manage estate agents");
+		menu.addEntry("Login", LOGIN);
+		menu.addEntry("New agent", NEW_AGENT);
+		menu.addEntry("Delete agent", DELETE_AGENT);
+		menu.addEntry("Update agent", UPDATE_AGENT);
+		menu.addEntry("Back to main menu", BACK);
 
 		// Verarbeite Eingabe
 		while (true) {
-			int response = maklerMenu.show();
+			int response = menu.show();
 			if (response != LOGIN && response != BACK && !authentifiedAsAdmin) {
 				System.out.println("Please, login as root to manage agents");
 				continue;
@@ -208,7 +210,13 @@ public class Main {
 				showAdminLogin();
 				break;
 			case NEW_AGENT:
-				newMakler();
+				newAgent();
+				break;
+			case DELETE_AGENT:
+				deleteAgent();
+				break;
+			case UPDATE_AGENT:
+				updateAgent();
 				break;
 			case BACK:
 				return;
@@ -229,7 +237,7 @@ public class Main {
 		}
 	}
 
-	public static void newMakler() {
+	public static void newAgent() {
 		EstateAgent m = new EstateAgent();
 
 		m.setName(FormUtil.readString("Name"));
@@ -239,6 +247,26 @@ public class Main {
 		agentsDAO.insert(m);
 
 		System.out.println("Agent with ID " + m.getId() + " was added");
+	}
+	
+	private static void updateAgent() {
+		EstateAgent m = new EstateAgent();
+
+		m.setId(FormUtil.readInt("ID"));
+		m.setName(FormUtil.readString("Name"));
+		m.setAddress(FormUtil.readString("Adresse"));
+		m.setLogin(FormUtil.readString("Login"));
+		m.setPassword(FormUtil.readString("Passwort"));
+		agentsDAO.update(m);
+
+		System.out.println("Agent with ID " + m.getId() + " was updated");
+	}
+
+	private static void deleteAgent() {
+		EstateAgent m = new EstateAgent();
+		m.setId(FormUtil.readInt("ID"));
+		agentsDAO.delete(m);
+		System.out.println("Agent with ID " + m.getId() + " was deleted");
 	}
 
 	public static void newHouse() {
