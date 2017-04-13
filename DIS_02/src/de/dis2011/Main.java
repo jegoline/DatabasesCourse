@@ -39,8 +39,8 @@ public class Main {
 
 		// Erzeuge Menü
 		Menu mainMenu = new Menu("Main Menu");
-		mainMenu.addEntry("Manage Estate Agents", MENU_AGENT);
-		mainMenu.addEntry("Manage Estates", MENU_ESTATE);
+		mainMenu.addEntry("Manage estate agents", MENU_AGENT);
+		mainMenu.addEntry("Manage estates", MENU_ESTATE);
 		mainMenu.addEntry("Quit", QUIT);
 
 		// Verarbeite Eingabe
@@ -118,13 +118,12 @@ public class Main {
 		final int UPDATE_APT = 2;
 		final int BACK = 3;
 
-		Menu menu = new Menu("Manage apartments");
+		Menu menu = new Menu("Manage Apartments");
 		menu.addEntry("New apartment", NEW_APT);
 		menu.addEntry("Delete apartment", DELETE_APT);
 		menu.addEntry("Update apartment", UPDATE_APT);
 		menu.addEntry("Back to estates menu", BACK);
 
-		// Verarbeite Eingabe
 		while (true) {
 			int response = menu.show();
 
@@ -151,7 +150,7 @@ public class Main {
 		final int ALL = 3;
 		final int BACK = 4;
 
-		Menu menu = new Menu("Manage houses");
+		Menu menu = new Menu("Manage Houses");
 		menu.addEntry("New house", NEW_HOUSE);
 		menu.addEntry("Delete house", DELETE_HOUSE);
 		menu.addEntry("Update house", UPDATE_HOUSE);
@@ -190,7 +189,7 @@ public class Main {
 		final int BACK = 4;
 
 		// Maklerverwaltungsmenü
-		Menu menu = new Menu("Manage estate agents");
+		Menu menu = new Menu("Manage Estate Agents");
 		menu.addEntry("Login", LOGIN);
 		menu.addEntry("New agent", NEW_AGENT);
 		menu.addEntry("Delete agent", DELETE_AGENT);
