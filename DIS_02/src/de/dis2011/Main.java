@@ -1,13 +1,25 @@
 package de.dis2011;
 
-import de.dis2011.dao.ApartmentJDBC;
+
+
 import de.dis2011.dao.EntryDAO;
 import de.dis2011.dao.EstateAgentDAO;
 import de.dis2011.dao.EstateAgentJDBC;
 import de.dis2011.dao.HouseJDBC;
+import de.dis2011.dao.ApartmentJDBC;
+import de.dis2011.dao.PersonDAO;
+import de.dis2011.dao.PersonJDBC;
+import de.dis2011.dao.TransactionDAO;
+import de.dis2011.dao.RentsJDBC;
+import de.dis2011.dao.SellsJDBC;
 import de.dis2011.data.Apartment;
 import de.dis2011.data.EstateAgent;
 import de.dis2011.data.House;
+import de.dis2011.data.Person;
+import de.dis2011.data.PurchaseContract;
+import de.dis2011.data.Rents;
+import de.dis2011.data.Sells;
+import de.dis2011.data.TenancyContract;
 
 /**
  * Hauptklasse
@@ -16,6 +28,9 @@ public class Main {
 	private static EstateAgentDAO agentsDAO;
 	private static EntryDAO<House> housesDAO;
 	private static EntryDAO<Apartment> aptDAO;
+	private static PersonDAO<Person> personDAO;
+	private static TransactionDAO<Rents> tenancyContractDAO;
+	private static TransactionDAO<Sells> purchaseContractDAO;
 
 	private static EstateAgent authentifiedAgent = null;
 	private static boolean authentifiedAsAdmin = false;
@@ -24,7 +39,10 @@ public class Main {
 		agentsDAO = new EstateAgentJDBC();
 		housesDAO = new HouseJDBC();
 		aptDAO = new ApartmentJDBC();
-
+		personDAO = new PersonJDBC();
+		tenancyContractDAO = new RentsJDBC();
+		purchaseContractDAO = new SellsJDBC();
+		
 		showMainMenu();
 	}
 
@@ -35,12 +53,14 @@ public class Main {
 		// Menüoptionen
 		final int MENU_AGENT = 0;
 		final int MENU_ESTATE = 1;
-		final int QUIT = 2;
+		final int MENU_CONTRACT = 2;
+		final int QUIT = 3;
 
 		// Erzeuge Menü
 		Menu mainMenu = new Menu("Main Menu");
 		mainMenu.addEntry("Manage estate agents", MENU_AGENT);
 		mainMenu.addEntry("Manage estates", MENU_ESTATE);
+		mainMenu.addEntry("Manage contracts", MENU_CONTRACT);
 		mainMenu.addEntry("Quit", QUIT);
 
 		// Verarbeite Eingabe
@@ -54,12 +74,52 @@ public class Main {
 			case MENU_ESTATE:
 				showEstateMenu();
 				break;
+			case MENU_CONTRACT:
+				showContractMenu();
+				break;
 			case QUIT:
 				return;
 			}
 		}
 	}
 
+
+	public static void showContractMenu() {
+		final int NEW_PERSON = 0;
+		final int NEW_RENT = 1;
+		final int NEW_SALE = 2;
+		final int OVERVIEW = 3;
+		final int BACK = 4;
+
+		Menu maklerMenu = new Menu("Manage Contracts");
+		maklerMenu.addEntry("New person", NEW_PERSON);
+		maklerMenu.addEntry("Sign rental contract", NEW_RENT);
+		maklerMenu.addEntry("Sign sale contract", NEW_SALE);
+		maklerMenu.addEntry("Contracts overview", OVERVIEW);
+		maklerMenu.addEntry("Back to main menu", BACK);
+
+		while (true) {
+			int response = maklerMenu.show();
+
+			switch (response) {
+			case NEW_PERSON:
+				newPerson();
+				break;
+			case NEW_RENT:
+				newRent();
+				break;
+			case NEW_SALE:
+				newSale();
+				break;
+			case OVERVIEW:
+				contractOverview();
+				break;
+			case BACK:
+				return;
+			}
+		}
+	}
+	
 	public static void showEstateMenu() {
 		final int LOGIN = 0;
 		final int HOUSES = 1;
@@ -283,6 +343,8 @@ public class Main {
 		housesDAO.insert(m);
 		System.out.println("House with ID " + m.getId() + " was added");
 	}
+	
+
 
 	private static void updateHouse() {
 		House m = new House();
@@ -358,5 +420,66 @@ public class Main {
 
 		aptDAO.insert(m);
 		System.out.println("Apartment with ID " + m.getId() + " was added");
+	}
+	
+	public static void newPerson() {
+		Person m = new Person();
+
+		m.setName(FormUtil.readString("Name"));
+		m.setFirstName(FormUtil.readString("First Name"));
+		m.setAddress(FormUtil.readString("Address"));
+
+		personDAO.insert(m);
+		System.out.println("Person with ID " + m.getId() + " was added");
+	}
+	
+	public static void newRent() {
+		Rents m = new Rents();
+		Person p = new Person();
+		TenancyContract c = new TenancyContract();
+		Apartment a = new Apartment();
+
+		p.setId(FormUtil.readInt("Select the person by ID"));
+		a.setId(FormUtil.readInt("Select the apartment by ID"));
+		c.setContractNo(FormUtil.readInt("Contract No."));
+		c.setDate(FormUtil.readDate("Date"));
+		c.setPlace(FormUtil.readString("Place"));
+		c.setStartDate(FormUtil.readDate("Start Date"));
+		c.setDuration(FormUtil.readInt("Duration"));
+		c.setAdditionalCosts(FormUtil.readDouble("Additional costs"));
+		
+		m.setTenancyContract(c);
+		m.setApartment(a);
+		m.setPerson(p);
+		
+		tenancyContractDAO.sign(m);
+		System.out.println("Contract with ID " + m.getId() + " was added");
+	}
+	
+	public static void newSale() {
+		Sells m = new Sells();
+		Person p = new Person();
+		PurchaseContract c = new PurchaseContract();
+		House h = new House();
+
+		p.setId(FormUtil.readInt("Select the person by ID"));
+		h.setId(FormUtil.readInt("Select the house by ID"));
+		c.setContractNo(FormUtil.readInt("Contract No."));
+		c.setDate(FormUtil.readDate("Date"));
+		c.setPlace(FormUtil.readString("Place"));
+		c.setNoOfInstallments(FormUtil.readInt("Number of Installments"));
+		c.setInterestRate(FormUtil.readDouble("Interest Rate"));
+		
+		m.setPurchaseContract(c);
+		m.setHouse(h);
+		m.setPerson(p);
+		
+		purchaseContractDAO.sign(m);
+		System.out.println("Contract with ID " + m.getId() + " was added");
+
+	}
+	
+	public static void contractOverview() {
+		// TODO implement batched command line table viewer
 	}
 }

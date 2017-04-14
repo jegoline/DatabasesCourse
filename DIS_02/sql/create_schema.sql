@@ -37,24 +37,6 @@
   builtin_kitchen char(1),
   foreign key (id) references estate(id));
 
- Create table purchase_contract (
-	id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1, NO CACHE) PRIMARY KEY,
-	contract_no INTEGER NOT NULL UNIQUE,
-	date DATE,
-	place VARCHAR(255),
-	no_of_installments INTEGER,
-	interest_rate DOUBLE
-);
-
-Create table tenancy_contract (
-	id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1, NO CACHE) PRIMARY KEY,
-	contract_no Integer NOT NULL UNIQUE,
-	date DATE,
-	place VARCHAR(255),
-	start_date DATE,
-	duration BIGINT
-);
-
 
 Create table person (
 	id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1, NO CACHE) PRIMARY KEY, 
@@ -66,21 +48,45 @@ Create table person (
 
 Create table sells (
 	id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1, NO CACHE) PRIMARY KEY, 
-	house_id integer,
-	purchase_contract_id integer,
-	person_id integer,
-	foreign key (house_id) references house(id),
-	foreign key (purchase_contract_id) references purchase_contract(id),
-	foreign key (person_id) references person(id)
+	fk_house_id INTEGER NOT NULL UNIQUE,
+	fk_person_id INTEGER NOT NULL,
+	FOREIGN KEY (fk_house_id) REFERENCES house(id)
+	ON DELETE CASCADE,
+	FOREIGN KEY (fk_person_id) REFERENCES person(id)
+	ON DELETE CASCADE
 );
 
 
-Create table rent (
-	id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1, NO CACHE) PRIMARY KEY, 
-	appartment_id integer,
-	tenancy_contract_id integer,
-	person_id integer,
-	foreign key (appartment_id) references apartment(id),
-	foreign key (tenancy_contract_id) references tenancy_contract(id),
-	foreign key (person_id) references person(id)
+Create table rents (
+	id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1, NO CACHE) PRIMARY KEY,
+	fk_apartment_id INTEGER NOT NULL UNIQUE,
+	fk_person_id INTEGER NOT NULL,
+	FOREIGN KEY(fk_apartment_id) REFERENCES apartment(id)
+	ON DELETE CASCADE,
+	FOREIGN KEY (fk_person_id) REFERENCES person(id)
+	ON DELETE CASCADE
 );
+
+Create table purchase_contract (
+	fk_id INTEGER NOT NULL UNIQUE,
+	contract_no INTEGER NOT NULL UNIQUE,
+	date DATE,
+	place VARCHAR(255),
+	no_of_installments INTEGER,
+	interest_rate DOUBLE,
+	FOREIGN KEY(fk_id) REFERENCES sells(id)
+	ON DELETE CASCADE
+);
+
+Create table tenancy_contract (
+	fk_id INTEGER NOT NULL UNIQUE,
+	contract_no INTEGER NOT NULL UNIQUE,
+	date DATE,
+	place VARCHAR(255),
+	start_date DATE,
+	duration BIGINT,
+	additional_costs DOUBLE,
+	FOREIGN KEY(fk_id) REFERENCES rents(id)
+	ON DELETE CASCADE
+);
+
