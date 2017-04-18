@@ -5,11 +5,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import de.dis2011.data.Apartment;
 import de.dis2011.data.DB2ConnectionManager;
+import de.dis2011.data.House;
 
-public class ApartmentJDBC implements EntryDAO<Apartment> {
+public class ApartmentJDBC implements EstateDAO<Apartment> {
 
 	@Override
 	public Apartment load(int id) {
@@ -21,7 +25,7 @@ public class ApartmentJDBC implements EntryDAO<Apartment> {
 		assert entry.getId() == -1;
 		Connection con = DB2ConnectionManager.getInstance().getConnection();
 
-		String inserEstateSQL = "INSERT INTO estate(city, postal_code, street, street_number, square_area) VALUES (?, ?, ?, ?, ?)";
+		String inserEstateSQL = "INSERT INTO estate(city, postal_code, street, street_number, square_area, estate_agent_id) VALUES (?, ?, ?, ?, ?, ?)";
 		String insertHouseSQL = "INSERT INTO apartment(id, floor, rent, rooms, balcony, builtin_kitchen) VALUES (?, ?, ?, ?, ?, ?)";
 
 		PreparedStatement insertEstate = null;
@@ -37,6 +41,7 @@ public class ApartmentJDBC implements EntryDAO<Apartment> {
 				insertEstate.setString(3, entry.getStreet());
 				insertEstate.setString(4, entry.getStreetNum());
 				insertEstate.setDouble(5, entry.getSqArea());
+				insertEstate.setInt(6, entry.getManagedByAgent());
 
 				insertEstate.executeUpdate();
 				ResultSet rs = insertEstate.getGeneratedKeys();
@@ -79,7 +84,7 @@ public class ApartmentJDBC implements EntryDAO<Apartment> {
 	@Override
 	public boolean update(Apartment entry) {
 		Connection con = DB2ConnectionManager.getInstance().getConnection();
-		String updateEstateSQL = "UPDATE estate SET city = ?, postal_code = ?, street = ?, street_number = ?, square_area=? WHERE id = ?";
+		String updateEstateSQL = "UPDATE estate SET city = ?, postal_code = ?, street = ?, street_number = ?, square_area=?, estate_agent_id=? WHERE id = ?";
 		String updateHouseSQL = "UPDATE apartment SET floor = ?, rent = ?, rooms = ?, balcony=?, builtin_kitchen=? WHERE id = ?";
 
 		PreparedStatement updateEstate = null;
@@ -95,7 +100,8 @@ public class ApartmentJDBC implements EntryDAO<Apartment> {
 				updateEstate.setString(3, entry.getStreet());
 				updateEstate.setString(4, entry.getStreetNum());
 				updateEstate.setDouble(5, entry.getSqArea());
-				updateEstate.setInt(6, entry.getId());
+				updateEstate.setInt(6, entry.getManagedByAgent());
+				updateEstate.setInt(7, entry.getId());
 
 				updateApt.setInt(1, entry.getFloor());
 				updateApt.setDouble(2, entry.getRent());
@@ -132,44 +138,71 @@ public class ApartmentJDBC implements EntryDAO<Apartment> {
 	@Override
 	public boolean delete(Apartment entry) {
 		Connection con = DB2ConnectionManager.getInstance().getConnection();
-
-		String deleteAptSql = "DELETE FROM apartment WHERE id = ?";
 		String deleteEstateSql = "DELETE FROM estate WHERE id = ?";
 
 		PreparedStatement deleteEstate = null;
-		PreparedStatement deleteApt = null;
-
 		try {
 			try {
-				con.setAutoCommit(false);
 				deleteEstate = con.prepareStatement(deleteEstateSql);
-				deleteApt = con.prepareStatement(deleteAptSql);
-
 				deleteEstate.setInt(1, entry.getId());
-				deleteApt.setInt(1, entry.getId());
-
-				deleteApt.executeUpdate();
-				deleteEstate.executeUpdate();
-
-				con.commit();
-				return true;
+				return deleteEstate.executeUpdate() != 0;
 			} catch (SQLException e) {
 				e.printStackTrace();
-				System.err.print("Transaction is being rolled back");
-				con.rollback();
 			} finally {
-				con.setAutoCommit(true);
-
 				if (deleteEstate != null) {
 					deleteEstate.close();
-				}
-				if (deleteApt != null) {
-					deleteApt.close();
 				}
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 		return false;
+	}
+
+	@Override
+	public List<Apartment> loadAll() {
+		Connection con = DB2ConnectionManager.getInstance().getConnection();
+		PreparedStatement pstmt = null;
+		
+		try {
+			try {
+				String selectSQL = "select * from apartment left join estate on estate.id = apartment.id";
+				pstmt = con.prepareStatement(selectSQL);
+
+				List<Apartment> result = new ArrayList<Apartment>();
+				ResultSet rs = pstmt.executeQuery();
+				while (rs.next()) {
+					Apartment h = new Apartment();
+					h.setId(rs.getInt("id"));
+					
+					h.setCity(rs.getString("city"));
+					h.setStreet(rs.getString("street"));
+					h.setStreetNum(rs.getString("street_number"));
+					h.setPostalCode(rs.getString("postal_code"));
+					h.setSqArea(rs.getDouble("square_area"));
+					h.setManagedByAgent(rs.getInt("estate_agent_id"));
+					
+					h.setFloor(rs.getInt("floor"));
+					h.setBalcony(rs.getBoolean("balcony"));
+					h.setRent(rs.getDouble("rent"));
+					h.setRooms(rs.getInt("rooms"));
+					h.setBuiltinKitchen(rs.getBoolean("builtin_kitchen"));
+
+					result.add(h);
+				}
+				rs.close();
+				return result;
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				if (pstmt != null) {
+					pstmt.close();
+				}
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return Collections.emptyList();
 	}
 }

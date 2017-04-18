@@ -1,17 +1,17 @@
 package de.dis2011;
 
+import java.util.List;
 
-
-import de.dis2011.dao.EntryDAO;
+import de.dis2011.dao.ApartmentJDBC;
 import de.dis2011.dao.EstateAgentDAO;
 import de.dis2011.dao.EstateAgentJDBC;
+import de.dis2011.dao.EstateDAO;
 import de.dis2011.dao.HouseJDBC;
-import de.dis2011.dao.ApartmentJDBC;
 import de.dis2011.dao.PersonDAO;
 import de.dis2011.dao.PersonJDBC;
-import de.dis2011.dao.TransactionDAO;
 import de.dis2011.dao.RentsJDBC;
 import de.dis2011.dao.SellsJDBC;
+import de.dis2011.dao.TransactionDAO;
 import de.dis2011.data.Apartment;
 import de.dis2011.data.EstateAgent;
 import de.dis2011.data.House;
@@ -20,14 +20,12 @@ import de.dis2011.data.PurchaseContract;
 import de.dis2011.data.Rents;
 import de.dis2011.data.Sells;
 import de.dis2011.data.TenancyContract;
+import dnl.utils.text.table.TextTable;
 
-/**
- * Hauptklasse
- */
 public class Main {
 	private static EstateAgentDAO agentsDAO;
-	private static EntryDAO<House> housesDAO;
-	private static EntryDAO<Apartment> aptDAO;
+	private static EstateDAO<House> housesDAO;
+	private static EstateDAO<Apartment> aptDAO;
 	private static PersonDAO<Person> personDAO;
 	private static TransactionDAO<Rents> tenancyContractDAO;
 	private static TransactionDAO<Sells> purchaseContractDAO;
@@ -42,7 +40,7 @@ public class Main {
 		personDAO = new PersonJDBC();
 		tenancyContractDAO = new RentsJDBC();
 		purchaseContractDAO = new SellsJDBC();
-		
+
 		showMainMenu();
 	}
 
@@ -83,7 +81,6 @@ public class Main {
 		}
 	}
 
-
 	public static void showContractMenu() {
 		final int NEW_PERSON = 0;
 		final int NEW_RENT = 1;
@@ -119,7 +116,7 @@ public class Main {
 			}
 		}
 	}
-	
+
 	public static void showEstateMenu() {
 		final int LOGIN = 0;
 		final int HOUSES = 1;
@@ -176,12 +173,14 @@ public class Main {
 		final int NEW_APT = 0;
 		final int DELETE_APT = 1;
 		final int UPDATE_APT = 2;
-		final int BACK = 3;
+		final int SHOW_ALL = 3;
+		final int BACK = 4;
 
 		Menu menu = new Menu("Manage Apartments");
 		menu.addEntry("New apartment", NEW_APT);
 		menu.addEntry("Delete apartment", DELETE_APT);
 		menu.addEntry("Update apartment", UPDATE_APT);
+		menu.addEntry("Show all", SHOW_ALL);
 		menu.addEntry("Back to estates menu", BACK);
 
 		while (true) {
@@ -193,6 +192,9 @@ public class Main {
 				break;
 			case DELETE_APT:
 				deleteApt();
+				break;
+			case SHOW_ALL:
+				showAllApartments();
 				break;
 			case UPDATE_APT:
 				updateApt();
@@ -214,7 +216,7 @@ public class Main {
 		menu.addEntry("New house", NEW_HOUSE);
 		menu.addEntry("Delete house", DELETE_HOUSE);
 		menu.addEntry("Update house", UPDATE_HOUSE);
-		menu.addEntry("Show all managed by me", ALL);
+		menu.addEntry("Show all", ALL);
 		menu.addEntry("Back to estates Menu", BACK);
 
 		// Verarbeite Eingabe
@@ -307,7 +309,7 @@ public class Main {
 
 		System.out.println("Agent with ID " + m.getId() + " was added");
 	}
-	
+
 	private static void updateAgent() {
 		EstateAgent m = new EstateAgent();
 
@@ -324,8 +326,12 @@ public class Main {
 	private static void deleteAgent() {
 		EstateAgent m = new EstateAgent();
 		m.setId(FormUtil.readInt("ID"));
-		agentsDAO.delete(m);
-		System.out.println("Agent with ID " + m.getId() + " was deleted");
+
+		if (agentsDAO.delete(m)) {
+			System.out.println("Agent with ID " + m.getId() + " was deleted");
+		} else {
+			System.out.println("Nothing to delete");
+		}
 	}
 
 	public static void newHouse() {
@@ -339,12 +345,14 @@ public class Main {
 		m.setFloors(FormUtil.readInt("Floors"));
 		m.setPrice(FormUtil.readDouble("Price"));
 		m.setGarden(FormUtil.readBoolean("Garden (y/n)"));
+		m.setManagedByAgent(authentifiedAgent.getId());
 
-		housesDAO.insert(m);
-		System.out.println("House with ID " + m.getId() + " was added");
+		if (housesDAO.insert(m)) {
+			System.out.println("House with ID " + m.getId() + " was added");
+		} else {
+			System.out.println("Ooops! Something went wrong!");
+		}
 	}
-	
-
 
 	private static void updateHouse() {
 		House m = new House();
@@ -358,6 +366,7 @@ public class Main {
 		m.setFloors(FormUtil.readInt("Floors"));
 		m.setPrice(FormUtil.readDouble("Price"));
 		m.setGarden(FormUtil.readBoolean("Garden (y/n)"));
+		m.setManagedByAgent(FormUtil.readInt("Estate Agent ID"));
 
 		housesDAO.update(m);
 		System.out.println("House with ID " + m.getId() + " was updated");
@@ -367,12 +376,61 @@ public class Main {
 		House m = new House();
 		m.setId(FormUtil.readInt("ID"));
 
-		housesDAO.delete(m);
-		System.out.println("House with ID " + m.getId() + " was deleted");
+		if (housesDAO.delete(m)) {
+			System.out.println("House with ID " + m.getId() + " was deleted");
+		} else {
+			System.out.println("Nothing to delete");
+		}
 	}
 
 	private static void showAllMyHouses() {
-		// TODO Auto-generated method stub
+		List<House> houses = housesDAO.loadAll();
+
+		String[] columnNames = new String[] { "ID", "Postal Code", "City", "Street", "Number", "Sq.Area", "Floors",
+				"Garden", "Price", "ManagedBy" };
+		String[][] data = new String[houses.size()][columnNames.length];
+		int i = 0;
+		for (House h : houses) {
+			data[i][0] = Integer.toString(h.getId());
+			data[i][1] = h.getPostalCode();
+			data[i][2] = h.getCity();
+			data[i][3] = h.getStreet();
+			data[i][4] = h.getStreetNum();
+			data[i][5] = Double.toString(h.getSqArea());
+			data[i][6] = Integer.toString(h.getFloors());
+			data[i][7] = Boolean.toString(h.isGarden());
+			data[i][8] = Double.toString(h.getPrice());
+			data[i][9] = Integer.toString(h.getManagedByAgent());
+			i++;
+		}
+		TextTable tt = new TextTable(columnNames, data);
+		tt.printTable();
+	}
+
+	private static void showAllApartments() {
+		List<Apartment> apts = aptDAO.loadAll();
+
+		String[] columnNames = new String[] { "ID", "Postal Code", "City", "Street", "Number", "Sq.Area", "Floor",
+				"Rooms", "Balcony", "Built-in Kitchen", "Rent", "ManagedBy" };
+		String[][] data = new String[apts.size()][columnNames.length];
+		int i = 0;
+		for (Apartment apt : apts) {
+			data[i][0] = Integer.toString(apt.getId());
+			data[i][1] = apt.getPostalCode();
+			data[i][2] = apt.getCity();
+			data[i][3] = apt.getStreet();
+			data[i][4] = apt.getStreetNum();
+			data[i][5] = Double.toString(apt.getSqArea());
+			data[i][6] = Integer.toString(apt.getFloor());
+			data[i][7] = Double.toString(apt.getRooms());
+			data[i][8] = Boolean.toString(apt.isBalcony());
+			data[i][9] = Boolean.toString(apt.isBuiltinKitchen());
+			data[i][10] = Double.toString(apt.getRent());
+			data[i][11] = Integer.toString(apt.getManagedByAgent());
+			i++;
+		}
+		TextTable tt = new TextTable(columnNames, data);
+		tt.printTable();
 	}
 
 	private static void updateApt() {
@@ -389,6 +447,7 @@ public class Main {
 		m.setRooms(FormUtil.readInt("Rooms"));
 		m.setBalcony(FormUtil.readBoolean("Balcony(y/n)"));
 		m.setBuiltinKitchen(FormUtil.readBoolean("Built-in Kitchen(y/n)"));
+		m.setManagedByAgent(FormUtil.readInt("Estate Agent ID"));
 
 		aptDAO.update(m);
 		System.out.println("Apartment with ID " + m.getId() + " was updated");
@@ -399,9 +458,11 @@ public class Main {
 		Apartment m = new Apartment();
 		m.setId(FormUtil.readInt("ID"));
 
-		aptDAO.delete(m);
-		System.out.println("Appartment with ID " + m.getId() + " was deleted");
-
+		if (aptDAO.delete(m)) {
+			System.out.println("Appartment with ID " + m.getId() + " was deleted");
+		} else {
+			System.out.println("Nothing to delete");
+		}
 	}
 
 	private static void newApt() {
@@ -417,11 +478,15 @@ public class Main {
 		m.setRooms(FormUtil.readInt("Rooms"));
 		m.setBalcony(FormUtil.readBoolean("Balcony(y/n)"));
 		m.setBuiltinKitchen(FormUtil.readBoolean("Built-in Kitchen(y/n)"));
+		m.setManagedByAgent(authentifiedAgent.getId());
 
-		aptDAO.insert(m);
-		System.out.println("Apartment with ID " + m.getId() + " was added");
+		if (aptDAO.insert(m)) {
+			System.out.println("Apartment with ID " + m.getId() + " was added");
+		} else {
+			System.out.println("Ooops! Something went wrong!");
+		}
 	}
-	
+
 	public static void newPerson() {
 		Person m = new Person();
 
@@ -432,7 +497,7 @@ public class Main {
 		personDAO.insert(m);
 		System.out.println("Person with ID " + m.getId() + " was added");
 	}
-	
+
 	public static void newRent() {
 		Rents m = new Rents();
 		Person p = new Person();
@@ -447,15 +512,15 @@ public class Main {
 		c.setStartDate(FormUtil.readDate("Start Date"));
 		c.setDuration(FormUtil.readInt("Duration"));
 		c.setAdditionalCosts(FormUtil.readDouble("Additional costs"));
-		
+
 		m.setTenancyContract(c);
 		m.setApartment(a);
 		m.setPerson(p);
-		
+
 		tenancyContractDAO.sign(m);
 		System.out.println("Contract with ID " + m.getId() + " was added");
 	}
-	
+
 	public static void newSale() {
 		Sells m = new Sells();
 		Person p = new Person();
@@ -469,16 +534,16 @@ public class Main {
 		c.setPlace(FormUtil.readString("Place"));
 		c.setNoOfInstallments(FormUtil.readInt("Number of Installments"));
 		c.setInterestRate(FormUtil.readDouble("Interest Rate"));
-		
+
 		m.setPurchaseContract(c);
 		m.setHouse(h);
 		m.setPerson(p);
-		
+
 		purchaseContractDAO.sign(m);
 		System.out.println("Contract with ID " + m.getId() + " was added");
 
 	}
-	
+
 	public static void contractOverview() {
 		// TODO implement batched command line table viewer
 	}

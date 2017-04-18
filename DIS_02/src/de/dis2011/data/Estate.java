@@ -56,4 +56,12 @@ public abstract class Estate {
 	public void setSqArea(double sqArea) {
 		this.sqArea = sqArea;
 	}
+
+	public int getManagedByAgent() {
+		return managedByAgent;
+	}
+
+	public void setManagedByAgent(int managedByAgent) {
+		this.managedByAgent = managedByAgent;
+	}
 }

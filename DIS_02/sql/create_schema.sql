@@ -11,22 +11,18 @@
   postal_code varchar(255),
   street varchar(255),
   street_number varchar (20),
-  square_area double);
-
- CREATE TABLE manages (
- 	id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1, NO CACHE) PRIMARY KEY,
- 	estate_id integer,
- 	estate_agent_id integer,
- 	foreign key (estate_id) references estate(id),
-	foreign key (estate_agent_id) references estate_agent(id)
- );
+  square_area double,
+  estate_agent_id integer,
+  foreign key (estate_agent_id) references estate_agent(id)
+  ON DELETE SET NULL);
  
  CREATE TABLE house (
   id integer not null primary key,
   floors integer,
   price DECIMAL(10, 2),
   garden char(1),
-  foreign key (id) references estate(id));
+  foreign key (id) references estate(id)
+  on delete cascade);
 
  CREATE TABLE apartment(
   id integer not null primary key,
@@ -35,7 +31,8 @@
   rooms double,
   balcony integer,
   builtin_kitchen char(1),
-  foreign key (id) references estate(id));
+  foreign key (id) references estate(id)
+  on delete cascade);
 
 
 Create table person (
