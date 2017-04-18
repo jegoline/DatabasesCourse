@@ -92,10 +92,10 @@ public class FormUtil {
 		while (!finished) {
 			String line = readString(label);
 			try {
-				ret = new SimpleDateFormat("dd MM yyyy").parse(line);
+				ret = new SimpleDateFormat("dd/MM/yyyy").parse(line);
 				finished = true;
 			} catch (ParseException e) {
-				System.err.println("Ungültige Eingabe: Bitte geben Sie ein Datum an! (dd MM yyyy)");
+				System.err.println("Ungültige Eingabe: Bitte geben Sie ein Datum an! (dd/MM/yyyy)");
 			}
 			finished = true;
 		}

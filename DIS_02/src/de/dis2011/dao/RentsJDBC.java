@@ -6,8 +6,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import de.dis2011.data.DB2ConnectionManager;
+import de.dis2011.data.House;
 import de.dis2011.data.Rents;
 import de.dis2011.data.TenancyContract;
 import de.dis2011.data.Apartment;
@@ -82,9 +85,61 @@ public class RentsJDBC implements TransactionDAO<Rents> {
 
 
 	@Override
-	public ArrayList<Rents> overview(int batchIndex, int batchSize) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Rents> loadAll(){
+		Connection con = DB2ConnectionManager.getInstance().getConnection();
+		PreparedStatement pstmt = null;
+		
+		try {
+			try {
+				String selectSQL = "select * from rents left join tenancy_contract on rents.id = tenancy_contract.fk_id";
+				pstmt = con.prepareStatement(selectSQL);
+
+				List<Rents> result = new ArrayList<Rents>();
+				ResultSet rs = pstmt.executeQuery();
+				while (rs.next()) {
+					Rents transaction = new Rents();
+					//set up objects
+					Apartment apartment = new Apartment();
+					TenancyContract tenancyContract = new TenancyContract();
+					Person person = new Person();
+					//
+					
+					transaction.setId(rs.getInt("id"));
+				
+					person.setId(rs.getInt("fk_person_id"));
+					
+					apartment.setId(rs.getInt("fk_apartment_id"));
+					
+					tenancyContract.setContractNo(rs.getInt("contract_no"));
+					tenancyContract.setAdditionalCosts(rs.getInt("additional_costs"));
+					tenancyContract.setDate(rs.getDate("date"));
+					tenancyContract.setDuration(rs.getInt("duration"));
+					tenancyContract.setPlace(rs.getString("place"));
+					tenancyContract.setStartDate(rs.getDate("start_date"));
+					
+					transaction.setApartment(apartment);
+					transaction.setTenancyContract(tenancyContract);
+					transaction.setPerson(person);
+					
+					result.add(transaction);
+				}
+				rs.close();
+				return result;
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				if (pstmt != null) {
+					pstmt.close();
+				}
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return Collections.emptyList();
 	}
 
+	
+
 }
+

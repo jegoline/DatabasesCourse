@@ -6,10 +6,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
+import de.dis2011.data.Apartment;
 import de.dis2011.data.DB2ConnectionManager;
 import de.dis2011.data.Sells;
+import de.dis2011.data.TenancyContract;
 import de.dis2011.data.PurchaseContract;
+import de.dis2011.data.Rents;
 import de.dis2011.data.House;
 import de.dis2011.data.Person;
 
@@ -80,9 +85,57 @@ public class SellsJDBC implements TransactionDAO<Sells> {
 	}
 
 	@Override
-	public ArrayList<Sells> overview(int batchIndex, int batchSize) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Sells> loadAll() {
+		Connection con = DB2ConnectionManager.getInstance().getConnection();
+		PreparedStatement pstmt = null;
+		
+		try {
+			try {
+				String selectSQL = "select * from sells left join purchase_contract on sells.id = purchase_contract.fk_id";
+				pstmt = con.prepareStatement(selectSQL);
+
+				List<Sells> result = new ArrayList<Sells>();
+				ResultSet rs = pstmt.executeQuery();
+				while (rs.next()) {
+					Sells transaction = new Sells();
+					//set up objects
+					House house = new House();
+					PurchaseContract purchaseContract = new PurchaseContract();
+					Person person = new Person();
+					//
+					
+					transaction.setId(rs.getInt("id"));
+				
+					person.setId(rs.getInt("fk_person_id"));
+					
+					house.setId(rs.getInt("fk_house_id"));
+					
+					purchaseContract.setContractNo(rs.getInt("contract_no"));
+					purchaseContract.setNoOfInstallments(rs.getInt("no_of_installments"));
+					purchaseContract.setDate(rs.getDate("date"));
+					purchaseContract.setPlace(rs.getString("place"));
+					purchaseContract.setInterestRate(rs.getDouble("interest_rate"));
+					
+					transaction.setHouse(house);
+					transaction.setPurchaseContract(purchaseContract);
+					transaction.setPerson(person);
+					
+					result.add(transaction);
+				}
+				rs.close();
+				return result;
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				if (pstmt != null) {
+					pstmt.close();
+				}
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return Collections.emptyList();
 	}
 
 }

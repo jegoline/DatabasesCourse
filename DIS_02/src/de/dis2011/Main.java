@@ -1,5 +1,7 @@
 package de.dis2011;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import de.dis2011.dao.ApartmentJDBC;
@@ -545,6 +547,75 @@ public class Main {
 	}
 
 	public static void contractOverview() {
-		// TODO implement batched command line table viewer
+		final int SALE_OVERVIEW = 0;
+		final int RENT_OVERVIEW = 1;
+		final int BACK = 2;
+
+		Menu maklerMenu = new Menu("Overviews");
+		maklerMenu.addEntry("Sale overview", SALE_OVERVIEW);
+		maklerMenu.addEntry("Rentals overview", RENT_OVERVIEW);
+		maklerMenu.addEntry("Back to main menu", BACK);
+
+		while (true) {
+			int response = maklerMenu.show();
+
+			switch (response) {
+			case SALE_OVERVIEW:
+				saleOverview();
+				break;
+			case RENT_OVERVIEW:
+				rentalOverview();
+				break;
+			case BACK:
+				return;
+			}
+		}
 	}
+	
+    public static void rentalOverview() {
+    	List<Rents> rents = tenancyContractDAO.loadAll();
+
+	String[] columnNames = new String[] { "ID", "Apartment ID", "Person ID", "Contract No."
+			, "Additional Costs" , "Date" , "Start Date", "Place", "Duration"};
+	String[][] data = new String[rents.size()][columnNames.length];
+	int i = 0;
+	for (Rents rent : rents) {
+		DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+		data[i][0] = Integer.toString(rent.getId());
+		data[i][1] = Integer.toString(rent.getApartment().getId());
+		data[i][2] = Integer.toString(rent.getPerson().getId());
+		data[i][3] = Integer.toString(rent.getTenancyContract().getContractNo());
+		data[i][4] = Double.toString(rent.getTenancyContract().getAdditionalCosts());
+		data[i][5] = df.format(rent.getTenancyContract().getDate());
+		data[i][6] = df.format(rent.getTenancyContract().getStartDate());
+		data[i][7] = rent.getTenancyContract().getPlace();
+		data[i][8] = Integer.toString(rent.getTenancyContract().getDuration());
+		i++;
+	}
+	TextTable tt = new TextTable(columnNames, data);
+	tt.printTable();
+}
+    
+    public static void saleOverview() {
+    	List<Sells> sells = purchaseContractDAO.loadAll();
+
+	String[] columnNames = new String[] { "ID", "House ID", "Person ID", "Contract No."
+			, "Interest Rate" , "Date" , "Place", "Duration"};
+	String[][] data = new String[sells.size()][columnNames.length];
+	int i = 0;
+	for (Sells sell : sells) {
+		DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+		data[i][0] = Integer.toString(sell.getId());
+		data[i][1] = Integer.toString(sell.getHouse().getId());
+		data[i][2] = Integer.toString(sell.getPerson().getId());
+		data[i][3] = Integer.toString(sell.getPurchaseContract().getContractNo());
+		data[i][4] = Double.toString(sell.getPurchaseContract().getInterestRate());
+		data[i][5] = df.format(sell.getPurchaseContract().getDate());
+		data[i][6] = sell.getPurchaseContract().getPlace();
+		data[i][7] = Integer.toString(sell.getPurchaseContract().getNoOfInstallments());
+		i++;
+	}
+	TextTable tt = new TextTable(columnNames, data);
+	tt.printTable();
+}
 }
