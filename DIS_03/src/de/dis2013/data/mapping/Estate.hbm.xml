@@ -3,7 +3,7 @@
         "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-	<class name="de.dis2013.data.Immobilie" abstract="true">
+	<class name="de.dis2013.data.Estate" abstract="true">
 		<id name="id" column="id">
 			<generator class="increment" />
 		</id>
@@ -12,9 +12,9 @@
 		<property name="strasse" type="string" column="strasse" />
 		<property name="hausnummer" type="string" column="hausnummer" />
 		<property name="flaeche" type="integer" column="flaeche" />
-		<many-to-one name="verwalter" class="de.dis2013.data.Makler" column="verwalter" not-null="true" />
+		<many-to-one name="verwalter" class="de.dis2013.data.EstateAgent" column="verwalter" not-null="true" />
 		
-		<union-subclass name="de.dis2013.data.Haus" table="haeuser">
+		<union-subclass name="de.dis2013.data.House" table="haeuser">
 			<property name="stockwerke" type="integer" column="stockwerke" />
 			<property name="kaufpreis" type="integer" column="kaufpreis" />
 			<property name="garten" type="boolean" column="garten" />
