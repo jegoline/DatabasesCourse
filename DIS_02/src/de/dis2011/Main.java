@@ -370,8 +370,11 @@ public class Main {
 		m.setGarden(FormUtil.readBoolean("Garden (y/n)"));
 		m.setManagedByAgent(FormUtil.readInt("Estate Agent ID"));
 
-		housesDAO.update(m);
-		System.out.println("House with ID " + m.getId() + " was updated");
+		if (housesDAO.update(m)){
+			System.out.println("House with ID " + m.getId() + " was updated");
+		} else {
+			System.out.println("Nothing to update");
+		}
 	}
 
 	private static void deleteHouse() {
@@ -389,7 +392,7 @@ public class Main {
 		List<House> houses = housesDAO.loadAll();
 
 		String[] columnNames = new String[] { "ID", "Postal Code", "City", "Street", "Number", "Sq.Area", "Floors",
-				"Garden", "Price", "ManagedBy" };
+				"Garden", "Price", "Managed by agent (ID)" };
 		String[][] data = new String[houses.size()][columnNames.length];
 		int i = 0;
 		for (House h : houses) {
@@ -413,7 +416,7 @@ public class Main {
 		List<Apartment> apts = aptDAO.loadAll();
 
 		String[] columnNames = new String[] { "ID", "Postal Code", "City", "Street", "Number", "Sq.Area", "Floor",
-				"Rooms", "Balcony", "Built-in Kitchen", "Rent", "ManagedBy" };
+				"Rooms", "Balcony", "Built-in Kitchen", "Rent", "Managed by agent (ID)" };
 		String[][] data = new String[apts.size()][columnNames.length];
 		int i = 0;
 		for (Apartment apt : apts) {
@@ -451,8 +454,11 @@ public class Main {
 		m.setBuiltinKitchen(FormUtil.readBoolean("Built-in Kitchen(y/n)"));
 		m.setManagedByAgent(FormUtil.readInt("Estate Agent ID"));
 
-		aptDAO.update(m);
-		System.out.println("Apartment with ID " + m.getId() + " was updated");
+		if(aptDAO.update(m)){
+			System.out.println("Apartment with ID " + m.getId() + " was updated");
+		} else {
+			System.out.println("Nothing to update");	
+		}
 
 	}
 
@@ -600,7 +606,7 @@ public class Main {
     	List<Sells> sells = purchaseContractDAO.loadAll();
 
 	String[] columnNames = new String[] { "ID", "House ID", "Person ID", "Contract No."
-			, "Interest Rate" , "Date" , "Place", "Duration"};
+			, "Interest Rate" , "Date" , "Place", "No. of installments"};
 	String[][] data = new String[sells.size()][columnNames.length];
 	int i = 0;
 	for (Sells sell : sells) {

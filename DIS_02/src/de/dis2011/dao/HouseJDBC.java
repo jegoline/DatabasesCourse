@@ -101,10 +101,11 @@ public class HouseJDBC implements EstateDAO<House> {
 				updateHouse.setBoolean(3, entry.isGarden());
 				updateHouse.setInt(4, entry.getId());
 							
-				updateEstate.executeUpdate();
-				updateHouse.executeUpdate();
+				int updEstate = updateEstate.executeUpdate();
+				int updHouse = updateHouse.executeUpdate();
+				
 				con.commit();
-				return true;
+				return updEstate != 0 || updHouse != 0;
 			} catch (SQLException e) {
 				e.printStackTrace();
 				System.err.print("Transaction is being rolled back");

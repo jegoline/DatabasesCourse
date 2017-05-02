@@ -110,11 +110,11 @@ public class ApartmentJDBC implements EstateDAO<Apartment> {
 				updateApt.setBoolean(5, entry.isBuiltinKitchen());
 				updateApt.setInt(6, entry.getId());
 
-				updateEstate.executeUpdate();
-				updateApt.executeUpdate();
+				int updEst = updateEstate.executeUpdate();
+				int updApt = updateApt.executeUpdate();
 
 				con.commit();
-				return true;
+				return (updEst != 0 || updApt != 0);
 			} catch (SQLException e) {
 				e.printStackTrace();
 				System.err.print("Transaction is being rolled back");
