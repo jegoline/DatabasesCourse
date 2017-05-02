@@ -4,17 +4,14 @@ import java.util.Set;
 
 import de.dis2013.util.Helper;
 
-/**
- * Makler-Bean
- */
 public class EstateAgent {
 	private int id;
 	private String name;
-	private String adresse;
+	private String address;
 	private String login;
-	private String passwort;
+	private String password;
 	static int currentId = 0;
-	private Set<Estate> immobilien;
+	private Set<Estate> estates;
 	
 	public EstateAgent() {
 	}
@@ -35,12 +32,12 @@ public class EstateAgent {
 		this.name = name;
 	}
 	
-	public String getAdresse() {
-		return adresse;
+	public String getAddress() {
+		return address;
 	}
 	
-	public void setAdresse(String adresse) {
-		this.adresse = adresse;
+	public void setAddress(String adresse) {
+		this.address = adresse;
 	}
 	
 	public String getLogin() {
@@ -51,20 +48,20 @@ public class EstateAgent {
 		this.login = login;
 	}
 	
-	public String getPasswort() {
-		return passwort;
+	public String getPassword() {
+		return password;
 	}
 	
-	public void setPasswort(String passwort) {
-		this.passwort = passwort;
+	public void setPassword(String passwort) {
+		this.password = passwort;
 	}
 	
-	public Set<Estate> getImmobilien() {
-		return immobilien;
+	public Set<Estate> getEstates() {
+		return estates;
 	}
 
-	public void setImmobilien(Set<Estate> immobilien) {
-		this.immobilien = immobilien;
+	public void setEstates(Set<Estate> estates) {
+		this.estates = estates;
 	}
 
 	public int hashCode() {
@@ -72,9 +69,9 @@ public class EstateAgent {
 		int result = 1;
 		
 		result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
-		result = prime * result + ((getAdresse() == null) ? 0 : getAdresse().hashCode());
+		result = prime * result + ((getAddress() == null) ? 0 : getAddress().hashCode());
 		result = prime * result + ((getLogin() == null) ? 0 : getLogin().hashCode());
-		result = prime * result + ((getPasswort() == null) ? 0 : getPasswort().hashCode());
+		result = prime * result + ((getPassword() == null) ? 0 : getPassword().hashCode());
 		
 		return result;
 	}
@@ -90,9 +87,9 @@ public class EstateAgent {
 	
 		if(other.getId() != getId() ||
 				!Helper.compareObjects(getName(), other.getName()) ||
-				!Helper.compareObjects(getAdresse(), other.getAdresse()) ||
+				!Helper.compareObjects(getAddress(), other.getAddress()) ||
 				!Helper.compareObjects(getLogin(), other.getLogin()) ||
-				!Helper.compareObjects(getPasswort(), other.getPasswort()))
+				!Helper.compareObjects(getPassword(), other.getPassword()))
 		{
 			return false;
 		}

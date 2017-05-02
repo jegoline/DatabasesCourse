@@ -6,11 +6,7 @@ import de.dis2013.menu.MaklerSelectionMenu;
 import de.dis2013.menu.Menu;
 import de.dis2013.util.FormUtil;
 
-/**
- * Klasse für die Menüs zur Verwaltung von Immobilien
- */
 public class MaklerEditor {
-	///Immobilienservice, der genutzt werden soll
 	private ImmoService service;
 	
 	public MaklerEditor(ImmoService service) {
@@ -29,10 +25,10 @@ public class MaklerEditor {
 		
 		//Maklerverwaltungsmenü
 		Menu maklerMenu = new Menu("Makler-Verwaltung");
-		maklerMenu.addEntry("Neuer Makler", NEW_MAKLER);
-		maklerMenu.addEntry("Makler bearbeiten", EDIT_MAKLER);
-		maklerMenu.addEntry("Makler löschen", DELETE_MAKLER);
-		maklerMenu.addEntry("Zurück zum Hauptmenü", BACK);
+		maklerMenu.addEntry("New agent", NEW_MAKLER);
+		maklerMenu.addEntry("Update agent", EDIT_MAKLER);
+		maklerMenu.addEntry("Delete agent", DELETE_MAKLER);
+		maklerMenu.addEntry("Back to main menu", BACK);
 		
 		//Verarbeite Eingabe
 		while(true) {
@@ -62,12 +58,12 @@ public class MaklerEditor {
 		EstateAgent m = new EstateAgent();
 		
 		m.setName(FormUtil.readString("Name"));
-		m.setAdresse(FormUtil.readString("Adresse"));
+		m.setAddress(FormUtil.readString("Address"));
 		m.setLogin(FormUtil.readString("Login"));
-		m.setPasswort(FormUtil.readString("Passwort"));
+		m.setPassword(FormUtil.readString("Password"));
 		service.addMakler(m);
 		
-		System.out.println("Makler mit der ID "+m.getId()+" wurde erzeugt.");
+		System.out.println("Agent with ID " + m.getId() + " was added.");
 	}
 	
 	/**
@@ -75,43 +71,37 @@ public class MaklerEditor {
 	 */
 	public void editMakler() {
 		//Menü zum selektieren des Maklers
-		Menu maklerSelectionMenu = new MaklerSelectionMenu("Makler editieren", service.getAllMakler());
+		Menu maklerSelectionMenu = new MaklerSelectionMenu("Update agent", service.getAllMakler());
 		int id = maklerSelectionMenu.show();
 		
 		//Falls nicht "zurück" gewählt, Makler bearbeiten
 		if(id != MaklerSelectionMenu.BACK) {
 			//Makler laden
 			EstateAgent m = service.getMaklerById(id);
-			System.out.println("Makler "+m.getName()+" wird bearbeitet. Leere Felder bleiben unverändert.");
+			System.out.println("Agent "+ m.getName()+" will be updated");
 			
 			//Neue Daten abfragen
 			String new_name = FormUtil.readString("Name ("+m.getName()+")");
-			String new_address = FormUtil.readString("Adresse ("+m.getAdresse()+")");
+			String new_address = FormUtil.readString("Address ("+m.getAddress()+")");
 			String new_login = FormUtil.readString("Login ("+m.getLogin()+")");
-			String new_password = FormUtil.readString("Passwort ("+m.getPasswort()+")");
+			String new_password = FormUtil.readString("Password ("+m.getPassword()+")");
 			
 			//Neue Daten setzen
 			if(!new_name.equals(""))
 				m.setName(new_name);
 			if(!new_address.equals(""))
-				m.setAdresse(new_address);
+				m.setAddress(new_address);
 			if(!new_login.equals(""))
 				m.setLogin(new_login);
 			if(!new_password.equals(""))
-				m.setPasswort(new_password);
+				m.setPassword(new_password);
 		}
 	}
 	
-	/**
-	 * Löscht einen Makler, nachdem der Benutzer
-	 * ihn ausgewählt hat.
-	 */
 	public void deleteMakler() {
-		//Menü zum selektieren des Maklers
-		Menu maklerSelectionMenu = new MaklerSelectionMenu("Makler löschen", service.getAllMakler());
+		Menu maklerSelectionMenu = new MaklerSelectionMenu("Delete agent", service.getAllMakler());
 		int id = maklerSelectionMenu.show();
 		
-		//Makler löschen falls nicht "zurück" ausgewählt wurde
 		if(id != MaklerSelectionMenu.BACK) {
 			EstateAgent m = service.getMaklerById(id);
 			service.deleteMakler(m);

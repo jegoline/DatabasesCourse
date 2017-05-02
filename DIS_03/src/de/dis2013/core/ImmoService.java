@@ -1,8 +1,10 @@
 package de.dis2013.core;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.hibernate.Session;
@@ -46,16 +48,11 @@ public class ImmoService {
 	 * @return Makler mit der ID oder null
 	 */
 	public EstateAgent getMaklerById(int id) {
-		Iterator<EstateAgent> it = makler.iterator();
-		
-		while(it.hasNext()) {
-			EstateAgent m = it.next();
-			
-			if(m.getId() == id)
-				return m;
-		}
-		
-		return null;
+		Session session = sessionFactory.getCurrentSession();
+		session.beginTransaction();
+		EstateAgent agent = (EstateAgent) session.get(EstateAgent.class, id);
+		session.getTransaction().commit();
+        return agent;
 	}
 	
 	/**
@@ -80,7 +77,11 @@ public class ImmoService {
 	 * Gibt alle Makler zurück
 	 */
 	public Set<EstateAgent> getAllMakler() {
-		return makler;
+		Session session = sessionFactory.getCurrentSession();
+		session.beginTransaction();
+		List<EstateAgent> agents = session.createCriteria(EstateAgent.class).list();
+		session.getTransaction().commit();
+		return new HashSet<EstateAgent>(agents);
 	}
 	
 	/**
@@ -106,7 +107,10 @@ public class ImmoService {
 	 * @param m Der Makler
 	 */
 	public void addMakler(EstateAgent m) {
-		makler.add(m);
+		Session session = sessionFactory.getCurrentSession();
+		session.beginTransaction();
+		session.save(m);
+		session.getTransaction().commit();
 	}
 	
 	/**
@@ -114,7 +118,10 @@ public class ImmoService {
 	 * @param m Der Makler
 	 */
 	public void deleteMakler(EstateAgent m) {
-		makler.remove(m);
+		Session session = sessionFactory.getCurrentSession();
+		session.beginTransaction();
+		session.delete(m);
+		session.getTransaction().commit();
 	}
 	
 	/**
@@ -394,9 +401,9 @@ public class ImmoService {
 		
 		EstateAgent m = new EstateAgent();
 		m.setName("Max Mustermann");
-		m.setAdresse("Am Informatikum 9");
+		m.setAddress("Am Informatikum 9");
 		m.setLogin("max");
-		m.setPasswort("max");
+		m.setPassword("max");
 		
 		//TODO: Dieser Makler wird im Speicher und der DB gehalten
 		this.addMakler(m);
@@ -447,7 +454,7 @@ public class ImmoService {
 		session = sessionFactory.openSession();
 		session.beginTransaction();
 		EstateAgent m2 = (EstateAgent)session.get(EstateAgent.class, m.getId());
-		Set<Estate> immos = m2.getImmobilien();
+		Set<Estate> immos = m2.getEstates();
 		Iterator<Estate> it = immos.iterator();
 		
 		while(it.hasNext()) {

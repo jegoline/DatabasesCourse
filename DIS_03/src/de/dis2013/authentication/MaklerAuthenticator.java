@@ -40,7 +40,7 @@ public class MaklerAuthenticator implements Authenticator {
 		if(m == null)
 			ret = false;
 		else
-			ret = password.equals(m.getPasswort());
+			ret = password.equals(m.getPassword());
 		
 		lastAuthenticatedMakler = m;
 		
