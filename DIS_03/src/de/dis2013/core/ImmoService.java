@@ -9,13 +9,13 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-import de.dis2013.data.Haus;
-import de.dis2013.data.Immobilie;
+import de.dis2013.data.House;
+import de.dis2013.data.Estate;
 import de.dis2013.data.Kaufvertrag;
-import de.dis2013.data.Makler;
+import de.dis2013.data.EstateAgent;
 import de.dis2013.data.Mietvertrag;
 import de.dis2013.data.Person;
-import de.dis2013.data.Wohnung;
+import de.dis2013.data.Apartment;
 
 /**
  * Klasse zur Verwaltung aller Datenbank-Entitäten.
@@ -26,10 +26,10 @@ import de.dis2013.data.Wohnung;
  */
 public class ImmoService {
 	//Datensätze im Speicher
-	private Set<Makler> makler = new HashSet<Makler>();
+	private Set<EstateAgent> makler = new HashSet<EstateAgent>();
 	private Set<Person> personen = new HashSet<Person>();
-	private Set<Haus> haeuser = new HashSet<Haus>();
-	private Set<Wohnung> wohnungen = new HashSet<Wohnung>();
+	private Set<House> haeuser = new HashSet<House>();
+	private Set<Apartment> wohnungen = new HashSet<Apartment>();
 	private Set<Mietvertrag> mietvertraege = new HashSet<Mietvertrag>();
 	private Set<Kaufvertrag> kaufvertraege = new HashSet<Kaufvertrag>();
 	
@@ -45,11 +45,11 @@ public class ImmoService {
 	 * @param id Die ID des Maklers
 	 * @return Makler mit der ID oder null
 	 */
-	public Makler getMaklerById(int id) {
-		Iterator<Makler> it = makler.iterator();
+	public EstateAgent getMaklerById(int id) {
+		Iterator<EstateAgent> it = makler.iterator();
 		
 		while(it.hasNext()) {
-			Makler m = it.next();
+			EstateAgent m = it.next();
 			
 			if(m.getId() == id)
 				return m;
@@ -63,11 +63,11 @@ public class ImmoService {
 	 * @param login Der Login des Maklers
 	 * @return Makler mit der ID oder null
 	 */
-	public Makler getMaklerByLogin(String login) {
-		Iterator<Makler> it = makler.iterator();
+	public EstateAgent getMaklerByLogin(String login) {
+		Iterator<EstateAgent> it = makler.iterator();
 		
 		while(it.hasNext()) {
-			Makler m = it.next();
+			EstateAgent m = it.next();
 			
 			if(m.getLogin().equals(login))
 				return m;
@@ -79,7 +79,7 @@ public class ImmoService {
 	/**
 	 * Gibt alle Makler zurück
 	 */
-	public Set<Makler> getAllMakler() {
+	public Set<EstateAgent> getAllMakler() {
 		return makler;
 	}
 	
@@ -105,7 +105,7 @@ public class ImmoService {
 	 * Fügt einen Makler hinzu
 	 * @param m Der Makler
 	 */
-	public void addMakler(Makler m) {
+	public void addMakler(EstateAgent m) {
 		makler.add(m);
 	}
 	
@@ -113,7 +113,7 @@ public class ImmoService {
 	 * Löscht einen Makler
 	 * @param m Der Makler
 	 */
-	public void deleteMakler(Makler m) {
+	public void deleteMakler(EstateAgent m) {
 		makler.remove(m);
 	}
 	
@@ -144,7 +144,7 @@ public class ImmoService {
 	 * Fügt ein Haus hinzu
 	 * @param h Das Haus
 	 */
-	public void addHaus(Haus h) {
+	public void addHaus(House h) {
 		haeuser.add(h);
 	}
 	
@@ -153,12 +153,12 @@ public class ImmoService {
 	 * @param m Der Makler
 	 * @return Alle Häuser, die vom Makler verwaltet werden
 	 */
-	public Set<Haus> getAllHaeuserForMakler(Makler m) {
-		Set<Haus> ret = new HashSet<Haus>();
-		Iterator<Haus> it = haeuser.iterator();
+	public Set<House> getAllHaeuserForMakler(EstateAgent m) {
+		Set<House> ret = new HashSet<House>();
+		Iterator<House> it = haeuser.iterator();
 		
 		while(it.hasNext()) {
-			Haus h = it.next();
+			House h = it.next();
 			
 			if(h.getVerwalter().equals(m))
 				ret.add(h);
@@ -172,11 +172,11 @@ public class ImmoService {
 	 * @param m Der Makler
 	 * @return Das Haus oder null, falls nicht gefunden
 	 */
-	public Haus getHausById(int id) {
-		Iterator<Haus> it = haeuser.iterator();
+	public House getHausById(int id) {
+		Iterator<House> it = haeuser.iterator();
 		
 		while(it.hasNext()) {
-			Haus h = it.next();
+			House h = it.next();
 			
 			if(h.getId() == id)
 				return h;
@@ -189,7 +189,7 @@ public class ImmoService {
 	 * Löscht ein Haus
 	 * @param p Das Haus
 	 */
-	public void deleteHouse(Haus h) {
+	public void deleteHouse(House h) {
 		haeuser.remove(h);
 	}
 	
@@ -197,7 +197,7 @@ public class ImmoService {
 	 * Fügt eine Wohnung hinzu
 	 * @param w die Wohnung
 	 */
-	public void addWohnung(Wohnung w) {
+	public void addWohnung(Apartment w) {
 		wohnungen.add(w);
 	}
 	
@@ -206,12 +206,12 @@ public class ImmoService {
 	 * @param m Der Makler
 	 * @return Alle Wohnungen, die vom Makler verwaltet werden
 	 */
-	public Set<Wohnung> getAllWohnungenForMakler(Makler m) {
-		Set<Wohnung> ret = new HashSet<Wohnung>();
-		Iterator<Wohnung> it = wohnungen.iterator();
+	public Set<Apartment> getAllWohnungenForMakler(EstateAgent m) {
+		Set<Apartment> ret = new HashSet<Apartment>();
+		Iterator<Apartment> it = wohnungen.iterator();
 		
 		while(it.hasNext()) {
-			Wohnung w = it.next();
+			Apartment w = it.next();
 			
 			if(w.getVerwalter().equals(m))
 				ret.add(w);
@@ -225,11 +225,11 @@ public class ImmoService {
 	 * @param id Die ID
 	 * @return Die Wohnung oder null, falls nicht gefunden
 	 */
-	public Wohnung getWohnungById(int id) {
-		Iterator<Wohnung> it = wohnungen.iterator();
+	public Apartment getWohnungById(int id) {
+		Iterator<Apartment> it = wohnungen.iterator();
 		
 		while(it.hasNext()) {
-			Wohnung w = it.next();
+			Apartment w = it.next();
 			
 			if(w.getId() == id)
 				return w;
@@ -242,7 +242,7 @@ public class ImmoService {
 	 * Löscht eine Wohnung
 	 * @param p Die Wohnung
 	 */
-	public void deleteWohnung(Wohnung w) {
+	public void deleteWohnung(Apartment w) {
 		wohnungen.remove(w);
 	}
 	
@@ -268,7 +268,7 @@ public class ImmoService {
 	 * @param m Der Makler
 	 * @return Alle Mietverträge, die zu Wohnungen gehören, die vom Makler verwaltet werden
 	 */
-	public Set<Mietvertrag> getAllMietvertraegeForMakler(Makler m) {
+	public Set<Mietvertrag> getAllMietvertraegeForMakler(EstateAgent m) {
 		Set<Mietvertrag> ret = new HashSet<Mietvertrag>();
 		Iterator<Mietvertrag> it = mietvertraege.iterator();
 		
@@ -287,7 +287,7 @@ public class ImmoService {
 	 * @param m Der Makler
 	 * @return Alle Kaufverträge, die zu Häusern gehören, die vom Makler verwaltet werden
 	 */
-	public Set<Kaufvertrag> getAllKaufvertraegeForMakler(Makler m) {
+	public Set<Kaufvertrag> getAllKaufvertraegeForMakler(EstateAgent m) {
 		Set<Kaufvertrag> ret = new HashSet<Kaufvertrag>();
 		Iterator<Kaufvertrag> it = kaufvertraege.iterator();
 		
@@ -324,7 +324,7 @@ public class ImmoService {
 	 * @param id Der Verwalter
 	 * @return Set aus Mietverträgen
 	 */
-	public Set<Mietvertrag> getMietvertragByVerwalter(Makler m) {
+	public Set<Mietvertrag> getMietvertragByVerwalter(EstateAgent m) {
 		Set<Mietvertrag> ret = new HashSet<Mietvertrag>();
 		Iterator<Mietvertrag> it = mietvertraege.iterator();
 		
@@ -343,7 +343,7 @@ public class ImmoService {
 	 * @param id Der Verwalter
 	 * @return Set aus Kaufverträgen
 	 */
-	public Set<Kaufvertrag> getKaufvertragByVerwalter(Makler m) {
+	public Set<Kaufvertrag> getKaufvertragByVerwalter(EstateAgent m) {
 		Set<Kaufvertrag> ret = new HashSet<Kaufvertrag>();
 		Iterator<Kaufvertrag> it = kaufvertraege.iterator();
 		
@@ -392,7 +392,7 @@ public class ImmoService {
 		
 		session.beginTransaction();
 		
-		Makler m = new Makler();
+		EstateAgent m = new EstateAgent();
 		m.setName("Max Mustermann");
 		m.setAdresse("Am Informatikum 9");
 		m.setLogin("max");
@@ -426,7 +426,7 @@ public class ImmoService {
 		
 		//Hibernate Session erzeugen
 		session.beginTransaction();
-		Haus h = new Haus();
+		House h = new House();
 		h.setOrt("Hamburg");
 		h.setPlz(22527);
 		h.setStrasse("Vogt-Kölln-Straße");
@@ -446,17 +446,17 @@ public class ImmoService {
 		//Hibernate Session erzeugen
 		session = sessionFactory.openSession();
 		session.beginTransaction();
-		Makler m2 = (Makler)session.get(Makler.class, m.getId());
-		Set<Immobilie> immos = m2.getImmobilien();
-		Iterator<Immobilie> it = immos.iterator();
+		EstateAgent m2 = (EstateAgent)session.get(EstateAgent.class, m.getId());
+		Set<Estate> immos = m2.getImmobilien();
+		Iterator<Estate> it = immos.iterator();
 		
 		while(it.hasNext()) {
-			Immobilie i = it.next();
+			Estate i = it.next();
 			System.out.println("Immo: "+i.getOrt());
 		}
 		session.close();
 		
-		Wohnung w = new Wohnung();
+		Apartment w = new Apartment();
 		w.setOrt("Hamburg");
 		w.setPlz(22527);
 		w.setStrasse("Vogt-Kölln-Straße");
@@ -469,7 +469,7 @@ public class ImmoService {
 		w.setVerwalter(m);
 		this.addWohnung(w);
 		
-		w = new Wohnung();
+		w = new Apartment();
 		w.setOrt("Berlin");
 		w.setPlz(22527);
 		w.setStrasse("Vogt-Kölln-Straße");

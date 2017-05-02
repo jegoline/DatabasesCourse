@@ -7,16 +7,16 @@ import de.dis2013.util.Helper;
 /**
  * Makler-Bean
  */
-public class Makler {
+public class EstateAgent {
 	private int id;
 	private String name;
 	private String adresse;
 	private String login;
 	private String passwort;
 	static int currentId = 0;
-	private Set<Immobilie> immobilien;
+	private Set<Estate> immobilien;
 	
-	public Makler() {
+	public EstateAgent() {
 	}
 	
 	public int getId() {
@@ -59,11 +59,11 @@ public class Makler {
 		this.passwort = passwort;
 	}
 	
-	public Set<Immobilie> getImmobilien() {
+	public Set<Estate> getImmobilien() {
 		return immobilien;
 	}
 
-	public void setImmobilien(Set<Immobilie> immobilien) {
+	public void setImmobilien(Set<Estate> immobilien) {
 		this.immobilien = immobilien;
 	}
 
@@ -83,10 +83,10 @@ public class Makler {
 		if (this == obj)
 			return true;
 		
-		if (obj == null || !(obj instanceof Makler))
+		if (obj == null || !(obj instanceof EstateAgent))
 			return false;
 	
-		Makler other = (Makler)obj;
+		EstateAgent other = (EstateAgent)obj;
 	
 		if(other.getId() != getId() ||
 				!Helper.compareObjects(getName(), other.getName()) ||

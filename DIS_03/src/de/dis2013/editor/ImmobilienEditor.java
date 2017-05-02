@@ -3,9 +3,9 @@ package de.dis2013.editor;
 import java.util.Set;
 
 import de.dis2013.core.ImmoService;
-import de.dis2013.data.Haus;
-import de.dis2013.data.Makler;
-import de.dis2013.data.Wohnung;
+import de.dis2013.data.House;
+import de.dis2013.data.EstateAgent;
+import de.dis2013.data.Apartment;
 import de.dis2013.menu.AppartmentSelectionMenu;
 import de.dis2013.menu.HouseSelectionMenu;
 import de.dis2013.menu.Menu;
@@ -19,9 +19,9 @@ public class ImmobilienEditor {
 	private ImmoService service;
 	
 	///Wird als Verwalter für die Immobilien eingetragen
-	private Makler verwalter;
+	private EstateAgent verwalter;
 	
-	public ImmobilienEditor(ImmoService service, Makler verwalter) {
+	public ImmobilienEditor(ImmoService service, EstateAgent verwalter) {
 		this.service = service;
 		this.verwalter = verwalter;
 	}
@@ -84,7 +84,7 @@ public class ImmobilienEditor {
 	 * Abfrage der Daten für ein neues Haus
 	 */
 	public void newHouse() {
-		Haus h = new Haus();
+		House h = new House();
 		
 		h.setOrt(FormUtil.readString("Ort"));
 		h.setPlz(FormUtil.readInt("PLZ"));
@@ -105,7 +105,7 @@ public class ImmobilienEditor {
 	 */
 	public void editHouse() {
 		//Alle Häuser suchen, die vom Makler verwaltet werden
-		Set<Haus> haeuser = service.getAllHaeuserForMakler(verwalter);
+		Set<House> haeuser = service.getAllHaeuserForMakler(verwalter);
 		
 		//Auswahlmenü für das zu bearbeitende Haus
 		HouseSelectionMenu hsm = new HouseSelectionMenu("Liste der verwalteten Häuser", haeuser);
@@ -114,7 +114,7 @@ public class ImmobilienEditor {
 		//Falls nicht der Eintrag "zurück" gewählt wurde, Haus bearbeiten
 		if(id != HouseSelectionMenu.BACK) {
 			//Gewähltes Haus laden
-			Haus h = service.getHausById(id);
+			House h = service.getHausById(id);
 			
 			System.out.println("Haus "+h.getStrasse()+" "+h.getHausnummer()+", "+h.getPlz()+" "+h.getOrt()+" wird bearbeitet. Leere Felder bzw. Eingabe von 0 lässt Feld unverändert.");
 			
@@ -160,7 +160,7 @@ public class ImmobilienEditor {
 	 */
 	public void deleteHouse() {
 		//Alle Häuser suchen, die vom Makler verwaltet werden
-		Set<Haus> haeuser = service.getAllHaeuserForMakler(verwalter);
+		Set<House> haeuser = service.getAllHaeuserForMakler(verwalter);
 		
 		//Auswahlmenü für das zu bearbeitende Haus
 		HouseSelectionMenu hsm = new HouseSelectionMenu("Liste der verwalteten Häuser", haeuser);
@@ -168,7 +168,7 @@ public class ImmobilienEditor {
 		
 		//Falls nicht der Eintrag "zurück" gewählt wurde, Haus löschen
 		if(id != HouseSelectionMenu.BACK) {
-			Haus h = service.getHausById(id);
+			House h = service.getHausById(id);
 			service.deleteHouse(h);
 		}
 	}
@@ -177,7 +177,7 @@ public class ImmobilienEditor {
 	 * Abfrage der Daten für eine neue Wohnung
 	 */
 	public void newAppartment() {
-		Wohnung w = new Wohnung();
+		Apartment w = new Apartment();
 		
 		w.setOrt(FormUtil.readString("Ort"));
 		w.setPlz(FormUtil.readInt("PLZ"));
@@ -199,7 +199,7 @@ public class ImmobilienEditor {
 	 */
 	public void editAppartment() {
 		//Alle Wohnungen suchen, die vom Makler verwaltet werden
-		Set<Wohnung> wohnungen = service.getAllWohnungenForMakler(verwalter);
+		Set<Apartment> wohnungen = service.getAllWohnungenForMakler(verwalter);
 		
 		//Auswahlmenü für die zu bearbeitende Wohnung
 		AppartmentSelectionMenu asm = new AppartmentSelectionMenu("Liste der verwalteten Wohnungen", wohnungen);
@@ -208,7 +208,7 @@ public class ImmobilienEditor {
 		//Falls nicht der Eintrag "zurück" gewählt wurde, Wohnung bearbeiten
 		if(id != AppartmentSelectionMenu.BACK) {
 			//Wohnung laden
-			Wohnung w = service.getWohnungById(id);
+			Apartment w = service.getWohnungById(id);
 			
 			System.out.println("Haus "+w.getStrasse()+" "+w.getHausnummer()+", "+w.getPlz()+" "+w.getOrt()+" wird bearbeitet. Leere Felder bzw. Eingabe von 0 lässt Feld unverändert.");
 			
@@ -256,7 +256,7 @@ public class ImmobilienEditor {
 	 */
 	public void deleteAppartment() {
 		//Alle Wohnungen suchen, die vom Makler verwaltet werden
-		Set<Wohnung> wohnungen = service.getAllWohnungenForMakler(verwalter);
+		Set<Apartment> wohnungen = service.getAllWohnungenForMakler(verwalter);
 		
 		//Auswahlmenü für die zu bearbeitende Wohnung
 		AppartmentSelectionMenu asm = new AppartmentSelectionMenu("Liste der verwalteten Wohnungen", wohnungen);
@@ -264,7 +264,7 @@ public class ImmobilienEditor {
 		
 		//Falls nicht der Eintrag "zurück" gewählt wurde, Wohnung löschen
 		if(id != HouseSelectionMenu.BACK) {
-			Wohnung w = service.getWohnungById(id);
+			Apartment w = service.getWohnungById(id);
 			service.deleteWohnung(w);
 		}
 	}

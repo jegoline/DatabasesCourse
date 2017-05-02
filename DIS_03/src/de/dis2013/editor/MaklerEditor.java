@@ -1,7 +1,7 @@
 package de.dis2013.editor;
 
 import de.dis2013.core.ImmoService;
-import de.dis2013.data.Makler;
+import de.dis2013.data.EstateAgent;
 import de.dis2013.menu.MaklerSelectionMenu;
 import de.dis2013.menu.Menu;
 import de.dis2013.util.FormUtil;
@@ -59,7 +59,7 @@ public class MaklerEditor {
 	 * die entprechenden Daten eingegeben hat.
 	 */
 	public void newMakler() {
-		Makler m = new Makler();
+		EstateAgent m = new EstateAgent();
 		
 		m.setName(FormUtil.readString("Name"));
 		m.setAdresse(FormUtil.readString("Adresse"));
@@ -81,7 +81,7 @@ public class MaklerEditor {
 		//Falls nicht "zurück" gewählt, Makler bearbeiten
 		if(id != MaklerSelectionMenu.BACK) {
 			//Makler laden
-			Makler m = service.getMaklerById(id);
+			EstateAgent m = service.getMaklerById(id);
 			System.out.println("Makler "+m.getName()+" wird bearbeitet. Leere Felder bleiben unverändert.");
 			
 			//Neue Daten abfragen
@@ -113,7 +113,7 @@ public class MaklerEditor {
 		
 		//Makler löschen falls nicht "zurück" ausgewählt wurde
 		if(id != MaklerSelectionMenu.BACK) {
-			Makler m = service.getMaklerById(id);
+			EstateAgent m = service.getMaklerById(id);
 			service.deleteMakler(m);
 		}
 	}

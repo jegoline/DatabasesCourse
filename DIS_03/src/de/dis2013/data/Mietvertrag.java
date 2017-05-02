@@ -11,7 +11,7 @@ public class Mietvertrag extends Vertrag {
 	private Date mietbeginn;
 	private int dauer;
 	private int nebenkosten;
-	private Wohnung wohnung;
+	private Apartment wohnung;
 
 	public Mietvertrag() {
 		super();
@@ -36,11 +36,11 @@ public class Mietvertrag extends Vertrag {
 		this.nebenkosten = nebenkosten;
 	}
 	
-	public Wohnung getWohnung() {
+	public Apartment getWohnung() {
 		return wohnung;
 	}
 
-	public void setWohnung(Wohnung wohnung) {
+	public void setWohnung(Apartment wohnung) {
 		this.wohnung = wohnung;
 	}
 

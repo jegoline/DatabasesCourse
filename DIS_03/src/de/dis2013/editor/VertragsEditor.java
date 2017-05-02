@@ -4,12 +4,12 @@ import java.util.Iterator;
 import java.util.Set;
 
 import de.dis2013.core.ImmoService;
-import de.dis2013.data.Haus;
+import de.dis2013.data.House;
 import de.dis2013.data.Kaufvertrag;
-import de.dis2013.data.Makler;
+import de.dis2013.data.EstateAgent;
 import de.dis2013.data.Mietvertrag;
 import de.dis2013.data.Person;
-import de.dis2013.data.Wohnung;
+import de.dis2013.data.Apartment;
 import de.dis2013.menu.AppartmentSelectionMenu;
 import de.dis2013.menu.HouseSelectionMenu;
 import de.dis2013.menu.Menu;
@@ -25,9 +25,9 @@ public class VertragsEditor {
 	private ImmoService service;
 	
 	///Makler, zu dessen Immobilien Verträge geschlossen werden dürfen
-	private Makler verwalter;
+	private EstateAgent verwalter;
 	
-	public VertragsEditor(ImmoService service, Makler verwalter) {
+	public VertragsEditor(ImmoService service, EstateAgent verwalter) {
 		this.service = service;
 		this.verwalter = verwalter;
 	}
@@ -108,7 +108,7 @@ public class VertragsEditor {
 	 */
 	public void newMietvertrag() {
 		//Alle Wohnungen des Maklers finden
-		Set<Wohnung> wohnungen = service.getAllWohnungenForMakler(verwalter);
+		Set<Apartment> wohnungen = service.getAllWohnungenForMakler(verwalter);
 		
 		//Auswahlmenü für die Wohnungen 
 		AppartmentSelectionMenu asm = new AppartmentSelectionMenu("Wohnung für Vertrag auswählen", wohnungen);
@@ -148,7 +148,7 @@ public class VertragsEditor {
 	 */
 	public void newKaufvertrag() {
 		//Alle Häuser des Maklers finden
-		Set<Haus> haeuser = service.getAllHaeuserForMakler(verwalter);
+		Set<House> haeuser = service.getAllHaeuserForMakler(verwalter);
 		
 		//Auswahlmenü für das Haus
 		HouseSelectionMenu asm = new HouseSelectionMenu("Haus für Vertrag auswählen", haeuser);

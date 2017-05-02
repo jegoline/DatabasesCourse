@@ -5,12 +5,12 @@ import de.dis2013.util.Helper;
 /**
  * Haus-Bean
  */
-public class Haus extends Immobilie {
+public class House extends Estate {
 	private int stockwerke;
 	private int kaufpreis;
 	private boolean garten;
 	
-	public Haus() {
+	public House() {
 		super();
 	}
 	
@@ -48,10 +48,10 @@ public class Haus extends Immobilie {
 		if (this == obj)
 			return true;
 		
-		if (obj == null || !(obj instanceof Haus))
+		if (obj == null || !(obj instanceof House))
 			return false;
 	
-		Haus other = (Haus)obj;
+		House other = (House)obj;
 	
 		if(other.getId() != getId() ||
 				other.getPlz() != getPlz() ||

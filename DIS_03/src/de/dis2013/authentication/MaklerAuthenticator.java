@@ -1,7 +1,7 @@
 package de.dis2013.authentication;
 
 import de.dis2013.core.ImmoService;
-import de.dis2013.data.Makler;
+import de.dis2013.data.EstateAgent;
 import de.dis2013.util.FormUtil;
 
 /**
@@ -9,7 +9,7 @@ import de.dis2013.util.FormUtil;
  */
 public class MaklerAuthenticator implements Authenticator {
 	private ImmoService service;
-	private Makler lastAuthenticatedMakler;
+	private EstateAgent lastAuthenticatedMakler;
 	
 	/**
 	 * Konstruktor
@@ -22,7 +22,7 @@ public class MaklerAuthenticator implements Authenticator {
 	/**
 	 * Gibt das Makler-Objekt zum letzten erfolgreich authentisierten Makler zurück
 	 */
-	public Makler getLastAuthenticatedMakler() {
+	public EstateAgent getLastAuthenticatedMakler() {
 		return this.lastAuthenticatedMakler;
 	}
 	
@@ -35,7 +35,7 @@ public class MaklerAuthenticator implements Authenticator {
 		String login = FormUtil.readString("Makler-Login");
 		String password = FormUtil.readPassword("Passwort");
 		
-		Makler m = service.getMaklerByLogin(login);
+		EstateAgent m = service.getMaklerByLogin(login);
 		
 		if(m == null)
 			ret = false;

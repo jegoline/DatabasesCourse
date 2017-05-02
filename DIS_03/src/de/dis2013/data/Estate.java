@@ -5,17 +5,17 @@ import de.dis2013.util.Helper;
 /**
  * Immobilien-Bean
  */
-public abstract class Immobilie {
+public abstract class Estate {
 	private int id = -1;
 	private String ort;
 	private int plz;
 	private String strasse;
 	private String hausnummer;
 	private int flaeche;
-	private Makler verwalter;
+	private EstateAgent verwalter;
 	static int currentId = 0;
 	
-	public Immobilie() {
+	public Estate() {
 		this.id = currentId++;
 	}
 	
@@ -56,11 +56,11 @@ public abstract class Immobilie {
 		this.flaeche = flaeche;
 	}
 	
-	public void setVerwalter(Makler verwalter) {
+	public void setVerwalter(EstateAgent verwalter) {
 		this.verwalter = verwalter;
 	}
 
-	public Makler getVerwalter() {
+	public EstateAgent getVerwalter() {
 		return verwalter;
 	}
 
@@ -79,10 +79,10 @@ public abstract class Immobilie {
 		if (this == obj)
 			return true;
 		
-		if (obj == null || !(obj instanceof Immobilie))
+		if (obj == null || !(obj instanceof Estate))
 			return false;
 	
-		Immobilie other = (Immobilie)obj;
+		Estate other = (Estate)obj;
 	
 		if(other.getId() != getId() ||
 				other.getPlz() != getPlz() ||

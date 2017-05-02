@@ -6,14 +6,14 @@ import de.dis2013.util.Helper;
 /**
  * Wohnungs-Bean
  */
-public class Wohnung extends Immobilie {
+public class Apartment extends Estate {
 	private int stockwerk;
 	private int mietpreis;
 	private int zimmer;
 	private boolean balkon;
 	private boolean ebk;
 	
-	public Wohnung() {
+	public Apartment() {
 		super();
 	}
 	
@@ -65,10 +65,10 @@ public class Wohnung extends Immobilie {
 		if (this == obj)
 			return true;
 		
-		if (obj == null || !(obj instanceof Wohnung))
+		if (obj == null || !(obj instanceof Apartment))
 			return false;
 	
-		Wohnung other = (Wohnung)obj;
+		Apartment other = (Apartment)obj;
 	
 		if(other.getId() != getId() ||
 				other.getPlz() != getPlz() ||
