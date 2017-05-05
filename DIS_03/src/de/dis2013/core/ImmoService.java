@@ -462,7 +462,6 @@ public class ImmoService {
 			Estate i = it.next();
 			System.out.println("Immo: "+i.getOrt());
 		}
-		session.close();
 		
 		Apartment w = new Apartment();
 		w.setOrt("Hamburg");
@@ -490,6 +489,9 @@ public class ImmoService {
 		w.setVerwalter(m);
 		this.addWohnung(w);
 		
+
+		session.beginTransaction();
+		
 		PurchaseContract kv = new PurchaseContract();
 		kv.setHouse(h);
 		kv.setContractingPerson(p1);
@@ -498,6 +500,7 @@ public class ImmoService {
 		kv.setPlace("Hamburg");
 		kv.setNoOfInstallments(5);
 		kv.setInterestRate(4);
+		session.save(kv);
 		this.addPurchaseContract(kv);
 		
 		TenancyContract mv = new TenancyContract();
@@ -509,6 +512,13 @@ public class ImmoService {
 		mv.setStartDate(new Date(System.currentTimeMillis()));
 		mv.setAdditionalCosts(65);
 		mv.setDuration(36);
+		session.save(mv);
 		this.addTenancyContract(mv);
+		
+		session.getTransaction().commit();
+		
+		
+		//close session
+		session.close();
 	}
 }

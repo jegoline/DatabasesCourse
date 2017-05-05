@@ -20,7 +20,7 @@
 		</union-subclass>
 		
 		<union-subclass name="de.dis2013.data.PurchaseContract" table="purchase_contract">
-			<property name="noOfInstallments" type="date" column="no_of_installments" />
+			<property name="noOfInstallments" type="integer" column="no_of_installments" />
 			<property name="interestRate" type="integer" column="interest_rate" />
 			<!-- <one-to-one name="house" class="de.dis2013.data.House" column="house_id" not-null="true" cascade="all" />  -->
 		</union-subclass>
