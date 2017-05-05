@@ -21,20 +21,20 @@ public class PersonEditor {
 	 * Zeigt die Personenverwaltung
 	 */
 	public void showPersonMenu() {
-		//Menüoptionen
+		//Menu options
 		final int NEW_PERSON = 0;
 		final int EDIT_PERSON = 1;
 		final int DELETE_PERSON = 2;
 		final int BACK = 3;
 		
-		//Personenverwaltungsmenü
-		Menu maklerMenu = new Menu("Personen-Verwaltung");
-		maklerMenu.addEntry("Neue Person", NEW_PERSON);
-		maklerMenu.addEntry("Person bearbeiten", EDIT_PERSON);
-		maklerMenu.addEntry("Person löschen", DELETE_PERSON);
-		maklerMenu.addEntry("Zurück zum Hauptmenü", BACK);
+		//Person administration menu
+		Menu maklerMenu = new Menu("Person Administration");
+		maklerMenu.addEntry("New person", NEW_PERSON);
+		maklerMenu.addEntry("Edit person", EDIT_PERSON);
+		maklerMenu.addEntry("Delete person", DELETE_PERSON);
+		maklerMenu.addEntry("Back to main menu", BACK);
 		
-		//Verarbeite Eingabe
+		//Edit input
 		while(true) {
 			int response = maklerMenu.show();
 			
@@ -61,40 +61,40 @@ public class PersonEditor {
 	public void newPerson() {
 		Person p = new Person();
 		
-		p.setVorname(FormUtil.readString("Vorname"));
-		p.setNachname(FormUtil.readString("Nachname"));
-		p.setAdresse(FormUtil.readString("Adresse"));
+		p.setFirstName(FormUtil.readString("First name"));
+		p.setName(FormUtil.readString("Name"));
+		p.setAddress(FormUtil.readString("Address"));
 		service.addPerson(p);
 		
-		System.out.println("Person mit der ID "+p.getId()+" wurde erzeugt.");
+		System.out.println("Person with ID "+p.getId()+" was added.");
 	}
 	
 	/**
 	 * Editiert eine Person, nachdem der Benutzer sie ausgewählt hat
 	 */
 	public void editPerson() {
-		//Personenauswahlmenü
-		Menu personSelectionMenu = new PersonSelectionMenu("Person bearbeiten", service.getAllPersons());
+		//Person selection menu
+		Menu personSelectionMenu = new PersonSelectionMenu("Edit Person", service.getAllPersons());
 		int id = personSelectionMenu.show();
 		
-		//Person barbeiten?
+		//Person edit
 		if(id != PersonSelectionMenu.BACK) {
-			//Person laden
+			//Person load
 			Person p = service.getPersonById(id);
-			System.out.println("Person "+p.getVorname()+" "+p.getNachname()+" wird bearbeitet. Leere Felder bleiben unverändert.");
+			System.out.println("Person "+p.getFirstName()+" "+p.getName()+" was edited. Empty fields remain unchanged.");
 			
-			//Neue Daten einlesen
-			String newVorname = FormUtil.readString("Vorname ("+p.getVorname()+")");
-			String newNachname = FormUtil.readString("Nachname ("+p.getNachname()+")");
-			String newAddress = FormUtil.readString("Adresse ("+p.getAdresse()+")");
+			//New Data acquisition
+			String newVorname = FormUtil.readString("First name ("+p.getFirstName()+")");
+			String newNachname = FormUtil.readString("Name ("+p.getName()+")");
+			String newAddress = FormUtil.readString("Address ("+p.getAddress()+")");
 			
-			//Neue Daten setzen
+			//Change
 			if(!newVorname.equals(""))
-				p.setVorname(newVorname);
+				p.setFirstName(newVorname);
 			if(!newNachname.equals(""))
-				p.setNachname(newNachname);
+				p.setName(newNachname);
 			if(!newAddress.equals(""))
-				p.setAdresse(newAddress);
+				p.setAddress(newAddress);
 		}
 	}
 	
@@ -104,7 +104,7 @@ public class PersonEditor {
 	 */
 	public void deletePerson() {
 		//Auswahl der Person
-		Menu personSelectionMenu = new PersonSelectionMenu("Person bearbeiten", service.getAllPersons());
+		Menu personSelectionMenu = new PersonSelectionMenu("Delete Person", service.getAllPersons());
 		int id = personSelectionMenu.show();
 		
 		//Löschen, falls nicht "zurück" gewählt wurde

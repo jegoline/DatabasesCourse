@@ -12,7 +12,7 @@
 		<property name="strasse" type="string" column="strasse" />
 		<property name="hausnummer" type="string" column="hausnummer" />
 		<property name="flaeche" type="integer" column="flaeche" />
-		<many-to-one name="verwalter" class="de.dis2013.data.EstateAgent" column="verwalter" not-null="true" />
+		<many-to-one name="verwalter" class="de.dis2013.data.EstateAgent" column="estate_agent_id" not-null="true" cascade="all" />
 		
 		<union-subclass name="de.dis2013.data.House" table="haeuser">
 			<property name="stockwerke" type="integer" column="stockwerke" />

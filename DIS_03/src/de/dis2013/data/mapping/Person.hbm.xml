@@ -3,12 +3,16 @@
         "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-	<class name="de.dis2013.data.Person" table="personen">
+	<class name="de.dis2013.data.Person" table="persons">
 		<id name="id" column="id">
 			<generator class="native" />
 		</id>
-		<property name="vorname" type="string" column="vorname" />
-		<property name="nachname" type="string" column="nachname" />
-		<property name="adresse" type="string" column="adresse" />
+		<property name="firstName" type="string" column="first_name" />
+		<property name="name" type="string" column="name" />
+		<property name="address" type="string" column="address" />
+		<set name="contracts" inverse="true" cascade="all" >
+			<key column="contracting_person_id" />
+			<one-to-many class="de.dis2013.data.Contract" />
+		</set>
 	</class>
 </hibernate-mapping>

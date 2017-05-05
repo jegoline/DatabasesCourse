@@ -1,15 +1,18 @@
 package de.dis2013.data;
 
+import java.util.Set;
+
 import de.dis2013.util.Helper;
 
 /**
- * Personen-Bean
+ * Person-Bean
  */
 public class Person {
 	private int id;
-	private String vorname;
-	private String nachname;
-	private String adresse;
+	private String firstName;
+	private String name;
+	private String address;
+	private Set<Contract> contracts;
 	
 	public Person() {
 	}
@@ -20,32 +23,40 @@ public class Person {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public String getVorname() {
-		return vorname;
+	public String getFirstName() {
+		return firstName;
 	}
-	public void setVorname(String vorname) {
-		this.vorname = vorname;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
-	public String getNachname() {
-		return nachname;
+	public String getName() {
+		return name;
 	}
-	public void setNachname(String nachname) {
-		this.nachname = nachname;
+	public void setName(String name) {
+		this.name = name;
 	}
-	public String getAdresse() {
-		return adresse;
+	public String getAddress() {
+		return address;
 	}
-	public void setAdresse(String adresse) {
-		this.adresse = adresse;
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	
+	public Set<Contract> getContracts() {
+		return contracts;
+	}
+
+	public void setContracts(Set<Contract> contracts) {
+		this.contracts = contracts;
 	}
 	
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		
-		result = prime * result + ((getVorname() == null) ? 0 : getVorname().hashCode());
-		result = prime * result + ((getNachname() == null) ? 0 : getNachname().hashCode());
-		result = prime * result + ((getAdresse() == null) ? 0 : getAdresse().hashCode());
+		result = prime * result + ((getFirstName() == null) ? 0 : getFirstName().hashCode());
+		result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
+		result = prime * result + ((getAddress() == null) ? 0 : getAddress().hashCode());
 		
 		return result;
 	}
@@ -60,9 +71,9 @@ public class Person {
 		Person other = (Person)obj;
 	
 		if(other.getId() != getId() ||
-				!Helper.compareObjects(this.getVorname(), other.getVorname()) ||
-				!Helper.compareObjects(this.getNachname(), other.getNachname()) ||
-				!Helper.compareObjects(this.getAdresse(), other.getAdresse()))
+				!Helper.compareObjects(this.getFirstName(), other.getFirstName()) ||
+				!Helper.compareObjects(this.getName(), other.getName()) ||
+				!Helper.compareObjects(this.getAddress(), other.getAddress()))
 		{
 			return false;
 		}

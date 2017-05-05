@@ -43,7 +43,6 @@ public class MaklerAuthenticator implements Authenticator {
 			ret = password.equals(m.getPassword());
 		
 		lastAuthenticatedMakler = m;
-		
 		if(!ret)
 			FormUtil.showMessage("Benutzername oder Passwort falsch!");
 		

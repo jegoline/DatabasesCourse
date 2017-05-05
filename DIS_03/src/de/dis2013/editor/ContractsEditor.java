@@ -1,0 +1,184 @@
+package de.dis2013.editor;
+
+import java.util.Iterator;
+import java.util.Set;
+
+import de.dis2013.core.ImmoService;
+import de.dis2013.data.House;
+import de.dis2013.data.PurchaseContract;
+import de.dis2013.data.EstateAgent;
+import de.dis2013.data.TenancyContract;
+import de.dis2013.data.Person;
+import de.dis2013.data.Apartment;
+import de.dis2013.menu.AppartmentSelectionMenu;
+import de.dis2013.menu.HouseSelectionMenu;
+import de.dis2013.menu.Menu;
+import de.dis2013.menu.PersonSelectionMenu;
+import de.dis2013.util.FormUtil;
+import de.dis2013.util.Helper;
+
+/**
+ * Klasse für die Menüs zur Verwaltung von Verträgen
+ */
+public class ContractsEditor {
+	///Immobilien-Service, der genutzt werden soll
+	private ImmoService service;
+	
+	///Makler, zu dessen Immobilien Verträge geschlossen werden dürfen
+	private EstateAgent estateAgent;
+	
+	public ContractsEditor(ImmoService service, EstateAgent estateAgent) {
+		this.service = service;
+		this.estateAgent = estateAgent;
+	}
+	
+	/**
+	 * Vertragsmenü
+	 */
+	public void showContractMenu() {
+		//Menüoptionen
+		final int NEW_LEASING_CONTRACT = 0;
+		final int NEW_SALE_CONTRACT = 1;
+		final int SHOW_CONTRACTS = 2;
+		final int BACK = 3;
+		
+		//Vertragsverwaltung
+		Menu maklerMenu = new Menu("Contract Administration");
+		maklerMenu.addEntry("New rental contract", NEW_LEASING_CONTRACT);
+		maklerMenu.addEntry("New purchase contract", NEW_SALE_CONTRACT);
+		maklerMenu.addEntry("View contracts", SHOW_CONTRACTS);
+		
+		maklerMenu.addEntry("Back to main menu", BACK);
+		
+		//Verarbeite Eingabe
+		while(true) {
+			int response = maklerMenu.show();
+			
+			switch(response) {
+				case NEW_LEASING_CONTRACT:
+					newTenancyContract();
+					break;
+				case NEW_SALE_CONTRACT:
+					newPurchaseContract();
+					break;
+				case SHOW_CONTRACTS:
+					viewContracts();
+					break;
+				case BACK:
+					return;
+			}
+		}
+	}
+	
+	public void viewContracts() {
+		//Mietverträge anzeigen
+		System.out.println("Mietverträge\n-----------------");
+		Set<TenancyContract> mvs = service.getAllTenancyContractsForEstateAgent(estateAgent);
+		Iterator<TenancyContract> itmv = mvs.iterator();
+		while(itmv.hasNext()) {
+			TenancyContract mv = itmv.next();
+			System.out.println("Tenancy contract "+mv.getContractNumber()+"\n"+
+							"\tSigned on	  "+Helper.dateToString(mv.getDate())+" in "+mv.getPlace()+"\n"+
+							"\tRenter:        "+mv.getContractingPerson().getFirstName()+" "+mv.getContractingPerson().getName()+"\n"+
+							"\tApartment:     "+mv.getApartment().getStrasse()+" "+mv.getApartment().getHausnummer()+", "+mv.getApartment().getPlz()+" "+mv.getApartment().getOrt()+"\n"+
+							"\tStart date:    "+Helper.dateToString(mv.getStartDate())+", Dauer: "+mv.getDuration()+" Monate\n"+
+							"\tRent:   		  "+mv.getApartment().getMietpreis()+" Euro, Addition costs: "+mv.getAdditionalCosts()+" Euro\n");
+		}
+		
+		System.out.println("");
+		
+		//Kaufverträge anzeigen
+		System.out.println("Purchase Contracts\n-----------------");
+		Set<PurchaseContract> kvs = service.getAllPurchaseContractsForEstateAgent(estateAgent);
+		Iterator<PurchaseContract> itkv = kvs.iterator();
+		while(itkv.hasNext()) {
+			PurchaseContract kv = itkv.next();
+			System.out.println("Purchase contract "+kv.getContractNumber()+"\n"+
+							"\tSigned on	  "+Helper.dateToString(kv.getDate())+" in "+kv.getPlace()+"\n"+
+							"\tOwner:         "+kv.getContractingPerson().getFirstName()+" "+kv.getContractingPerson().getName()+"\n"+
+							"\tHouse:         "+kv.getHouse().getStrasse()+" "+kv.getHouse().getHausnummer()+", "+kv.getHouse().getPlz()+" "+kv.getHouse().getOrt()+"\n"+
+							"\tPrice:   	  "+kv.getHouse().getKaufpreis()+" Euro\n"+
+							"\tNo. of instal.:"+kv.getNoOfInstallments()+", Interest rate: "+kv.getInterestRate()+"%\n");
+		}
+	}
+	
+	
+	/**
+	 * Menü zum anlegen eines neuen Mietvertrags
+	 */
+	public void newTenancyContract() {
+		//Alle Wohnungen des Maklers finden
+		Set<Apartment> apartments = service.getAllWohnungenForMakler(estateAgent);
+		
+		//Auswahlmenü für die Wohnungen 
+		AppartmentSelectionMenu asm = new AppartmentSelectionMenu("Choose apartment for contract", apartments);
+		int wid = asm.show();
+		
+		//Falls kein Abbruch: Auswahl der Person
+		if(wid != AppartmentSelectionMenu.BACK) {
+			//Alle Personen laden
+			Set<Person> persons = service.getAllPersons();
+			
+			//Menü zur Auswahl der Person
+			PersonSelectionMenu psm = new PersonSelectionMenu("Choose Person for Contract", persons);
+			int pid = psm.show();
+			
+			//Falls kein Abbruch: Vertragsdaten abfragen und Vertrag anlegen
+			if(pid != PersonSelectionMenu.BACK) {
+				TenancyContract m = new TenancyContract();
+		
+				m.setApartment(service.getWohnungById(wid));
+				m.setContractingPerson(service.getPersonById(pid));
+				m.setContractNumber(FormUtil.readInt("Contract number"));
+				m.setDate(FormUtil.readDate("Date"));
+				m.setPlace(FormUtil.readString("Place"));
+				m.setStartDate(FormUtil.readDate("Start date"));
+				m.setDuration(FormUtil.readInt("Duration in months"));
+				m.setAdditionalCosts(FormUtil.readInt("Additional costs"));
+				
+				service.addTenancyContract(m);
+				
+				System.out.println("Rental contract with ID "+m.getId()+" was added.");
+			}
+		}
+	}
+	
+	/**
+	 * Menü zum anlegen eines neuen Kaufvertrags
+	 */
+	public void newPurchaseContract() {
+		//Alle Häuser des Maklers finden
+		Set<House> houses = service.getAllHaeuserForMakler(estateAgent);
+		
+		//Auswahlmenü für das Haus
+		HouseSelectionMenu asm = new HouseSelectionMenu("Choose House for Contract", houses);
+		int hid = asm.show();
+		
+		//Falls kein Abbruch: Auswahl der Person
+		if(hid != AppartmentSelectionMenu.BACK) {
+			//Alle Personen laden
+			Set<Person> persons = service.getAllPersons();
+			
+			//Menü zur Auswahl der Person
+			PersonSelectionMenu psm = new PersonSelectionMenu("Choose Person for Contract", persons);
+			int pid = psm.show();
+			
+			//Falls kein Abbruch: Vertragsdaten abfragen und Vertrag anlegen
+			if(pid != PersonSelectionMenu.BACK) {
+				PurchaseContract k = new PurchaseContract();
+		
+				k.setHouse(service.getHausById(hid));
+				k.setContractingPerson(service.getPersonById(pid));
+				k.setContractNumber(FormUtil.readInt("Contract No."));
+				k.setDate(FormUtil.readDate("Date"));
+				k.setPlace(FormUtil.readString("Place"));
+				k.setNoOfInstallments(FormUtil.readInt("No. of installments"));
+				k.setInterestRate(FormUtil.readInt("Interest rate"));
+				
+				service.addPurchaseContract(k);
+				
+				System.out.println("Purchase contract with ID "+k.getId()+" was added.");
+			}
+		}
+	}
+}

@@ -6,7 +6,7 @@ import de.dis2013.core.ImmoService;
 import de.dis2013.editor.ImmobilienEditor;
 import de.dis2013.editor.MaklerEditor;
 import de.dis2013.editor.PersonEditor;
-import de.dis2013.editor.VertragsEditor;
+import de.dis2013.editor.ContractsEditor;
 import de.dis2013.menu.Menu;
 
 /**
@@ -47,6 +47,7 @@ public class Main {
 		
 		//Testdaten
 		service.addTestData();
+	
 		
 		//Verarbeite Eingabe
 		while(true) {
@@ -73,8 +74,8 @@ public class Main {
 					break;
 				case MENU_VERTRAG:
 					if(ma.authenticate()) {
-						VertragsEditor ve = new VertragsEditor(service, ma.getLastAuthenticatedMakler());
-						ve.showVertragsMenu();
+						ContractsEditor ve = new ContractsEditor(service, ma.getLastAuthenticatedMakler());
+						ve.showContractMenu();
 					}
 					break;
 				case QUIT:
