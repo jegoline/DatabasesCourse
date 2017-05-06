@@ -7,12 +7,12 @@ import de.dis2013.util.Helper;
  */
 public abstract class Estate {
 	private int id = -1;
-	private String ort;
-	private int plz;
-	private String strasse;
-	private String hausnummer;
-	private int flaeche;
-	private EstateAgent verwalter;
+	private String city;
+	private int postalCode;
+	private String street;
+	private String streetNumber;
+	private int squareArea;
+	private EstateAgent agent;
 	static int currentId = 0;
 	
 	public Estate() {
@@ -25,52 +25,52 @@ public abstract class Estate {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public String getOrt() {
-		return ort;
+	public String getCity() {
+		return city;
 	}
-	public void setOrt(String ort) {
-		this.ort = ort;
+	public void setCity(String city) {
+		this.city = city;
 	}
-	public int getPlz() {
-		return plz;
+	public int getPostalCode() {
+		return postalCode;
 	}
-	public void setPlz(int plz) {
-		this.plz = plz;
+	public void setPostalCode(int plz) {
+		this.postalCode = plz;
 	}
-	public String getStrasse() {
-		return strasse;
+	public String getStreet() {
+		return street;
 	}
-	public void setStrasse(String strasse) {
-		this.strasse = strasse;
+	public void setStreet(String strasse) {
+		this.street = strasse;
 	}
-	public String getHausnummer() {
-		return hausnummer;
+	public String getStreetNumber() {
+		return streetNumber;
 	}
-	public void setHausnummer(String hausnummer) {
-		this.hausnummer = hausnummer;
+	public void setStreetNumber(String hausnummer) {
+		this.streetNumber = hausnummer;
 	}
-	public int getFlaeche() {
-		return flaeche;
+	public int getSquareArea() {
+		return squareArea;
 	}
-	public void setFlaeche(int flaeche) {
-		this.flaeche = flaeche;
+	public void setSquareArea(int flaeche) {
+		this.squareArea = flaeche;
 	}
 	
-	public void setVerwalter(EstateAgent verwalter) {
-		this.verwalter = verwalter;
+	public void setAgent(EstateAgent verwalter) {
+		this.agent = verwalter;
 	}
 
-	public EstateAgent getVerwalter() {
-		return verwalter;
+	public EstateAgent getAgent() {
+		return agent;
 	}
 
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		
-		result = prime * result + ((getOrt() == null) ? 0 : getOrt().hashCode());
-		result = prime * result + ((getStrasse() == null) ? 0 : getStrasse().hashCode());
-		result = prime * result + ((getHausnummer() == null) ? 0 : getHausnummer().hashCode());
+		result = prime * result + ((getCity() == null) ? 0 : getCity().hashCode());
+		result = prime * result + ((getStreet() == null) ? 0 : getStreet().hashCode());
+		result = prime * result + ((getStreetNumber() == null) ? 0 : getStreetNumber().hashCode());
 		
 		return result;
 	}
@@ -85,11 +85,11 @@ public abstract class Estate {
 		Estate other = (Estate)obj;
 	
 		if(other.getId() != getId() ||
-				other.getPlz() != getPlz() ||
-				other.getFlaeche() != getFlaeche() ||
-				!Helper.compareObjects(this.getOrt(), other.getOrt()) ||
-				!Helper.compareObjects(this.getStrasse(), other.getStrasse()) ||
-				!Helper.compareObjects(this.getHausnummer(), other.getHausnummer()))
+				other.getPostalCode() != getPostalCode() ||
+				other.getSquareArea() != getSquareArea() ||
+				!Helper.compareObjects(this.getCity(), other.getCity()) ||
+				!Helper.compareObjects(this.getStreet(), other.getStreet()) ||
+				!Helper.compareObjects(this.getStreetNumber(), other.getStreetNumber()))
 		{
 			return false;
 		}

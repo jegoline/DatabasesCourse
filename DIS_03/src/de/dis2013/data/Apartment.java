@@ -3,60 +3,57 @@ package de.dis2013.data;
 import de.dis2013.util.Helper;
 
 
-/**
- * Wohnungs-Bean
- */
 public class Apartment extends Estate {
-	private int stockwerk;
-	private int mietpreis;
-	private int zimmer;
-	private boolean balkon;
-	private boolean ebk;
+	private int floor;
+	private int rent;
+	private int rooms;
+	private boolean balcony;
+	private boolean builtinKitchen;
 	
 	public Apartment() {
 		super();
 	}
 	
-	public int getStockwerk() {
-		return stockwerk;
+	public int getFloor() {
+		return floor;
 	}
-	public void setStockwerk(int stockwerk) {
-		this.stockwerk = stockwerk;
+	public void setFloor(int stockwerk) {
+		this.floor = stockwerk;
 	}
-	public int getMietpreis() {
-		return mietpreis;
+	public int getRent() {
+		return rent;
 	}
-	public void setMietpreis(int mietpreis) {
-		this.mietpreis = mietpreis;
+	public void setRent(int mietpreis) {
+		this.rent = mietpreis;
 	}
-	public int getZimmer() {
-		return zimmer;
+	public int getRooms() {
+		return rooms;
 	}
-	public void setZimmer(int zimmer) {
-		this.zimmer = zimmer;
+	public void setRooms(int zimmer) {
+		this.rooms = zimmer;
 	}
-	public boolean isBalkon() {
-		return balkon;
+	public boolean isBalcony() {
+		return balcony;
 	}
-	public void setBalkon(boolean balkon) {
-		this.balkon = balkon;
+	public void setBalcony(boolean balkon) {
+		this.balcony = balkon;
 	}
-	public boolean isEbk() {
-		return ebk;
+	public boolean isBuiltinKitchen() {
+		return builtinKitchen;
 	}
-	public void setEbk(boolean ebk) {
-		this.ebk = ebk;
+	public void setBuiltinKitchen(boolean ebk) {
+		this.builtinKitchen = ebk;
 	}
 	
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
 		
-		result = prime * result + getStockwerk();
-		result = prime * result + getMietpreis();
-		result = prime * result + getZimmer();
-		result = prime * result + ((isBalkon()) ? 1 : 0);
-		result = prime * result + ((isEbk()) ? 1 : 0);
+		result = prime * result + getFloor();
+		result = prime * result + getRent();
+		result = prime * result + getRooms();
+		result = prime * result + ((isBalcony()) ? 1 : 0);
+		result = prime * result + ((isBuiltinKitchen()) ? 1 : 0);
 		
 		return result;
 	}
@@ -71,16 +68,16 @@ public class Apartment extends Estate {
 		Apartment other = (Apartment)obj;
 	
 		if(other.getId() != getId() ||
-				other.getPlz() != getPlz() ||
-				other.getFlaeche() != getFlaeche() ||
-				!Helper.compareObjects(this.getOrt(), other.getOrt()) ||
-				!Helper.compareObjects(this.getStrasse(), other.getStrasse()) ||
-				!Helper.compareObjects(this.getHausnummer(), other.getHausnummer()) ||
-				getStockwerk() != other.getStockwerk() ||
-				getMietpreis() != other.getMietpreis() ||
-				getZimmer() != other.getZimmer() ||
-				isBalkon() != other.isBalkon() ||
-				isEbk() != other.isEbk())
+				other.getPostalCode() != getPostalCode() ||
+				other.getSquareArea() != getSquareArea() ||
+				!Helper.compareObjects(this.getCity(), other.getCity()) ||
+				!Helper.compareObjects(this.getStreet(), other.getStreet()) ||
+				!Helper.compareObjects(this.getStreetNumber(), other.getStreetNumber()) ||
+				getFloor() != other.getFloor() ||
+				getRent() != other.getRent() ||
+				getRooms() != other.getRooms() ||
+				isBalcony() != other.isBalcony() ||
+				isBuiltinKitchen() != other.isBuiltinKitchen())
 		{
 			return false;
 		}

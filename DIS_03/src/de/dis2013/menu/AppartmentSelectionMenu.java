@@ -17,7 +17,7 @@ public class AppartmentSelectionMenu extends Menu {
 		Iterator<Apartment> it = wohnungen.iterator();
 		while(it.hasNext()) {
 			Apartment w = it.next();
-			addEntry(w.getStrasse()+" "+w.getHausnummer()+", "+w.getPlz()+" "+w.getOrt(), w.getId());
+			addEntry(w.getStreet()+" "+w.getStreetNumber()+", "+w.getPostalCode()+" "+w.getCity(), w.getId());
 		}
 		addEntry("Zurück", BACK);
 	}

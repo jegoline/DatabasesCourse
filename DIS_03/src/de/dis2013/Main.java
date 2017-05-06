@@ -3,8 +3,8 @@ package de.dis2013;
 import de.dis2013.authentication.MaklerAuthenticator;
 import de.dis2013.authentication.PropertiesFileAuthenticator;
 import de.dis2013.core.ImmoService;
-import de.dis2013.editor.ImmobilienEditor;
-import de.dis2013.editor.MaklerEditor;
+import de.dis2013.editor.EstateEditor;
+import de.dis2013.editor.EstateAgentEditor;
 import de.dis2013.editor.PersonEditor;
 import de.dis2013.editor.ContractsEditor;
 import de.dis2013.menu.Menu;
@@ -34,10 +34,10 @@ public class Main {
 		final int QUIT = 4;
 		
 		//Erzeuge Menü
-		Menu mainMenu = new Menu("Hauptmenü");
-		mainMenu.addEntry("Makler-Verwaltung", MENU_MAKLER);
+		Menu mainMenu = new Menu("Main menu");
+		mainMenu.addEntry("Agents management", MENU_MAKLER);
 		mainMenu.addEntry("Personen-Verwaltung", MENU_PERSON);
-		mainMenu.addEntry("Immobilien-Verwaltung", MENU_IMMO);
+		mainMenu.addEntry("Estate Management", MENU_IMMO);
 		mainMenu.addEntry("Vertragsmenü", MENU_VERTRAG);
 		mainMenu.addEntry("Beenden", QUIT);
 		
@@ -56,7 +56,7 @@ public class Main {
 			switch(response) {
 				case MENU_MAKLER:
 					if(pfa.authenticate()) {
-						MaklerEditor me = new MaklerEditor(service);
+						EstateAgentEditor me = new EstateAgentEditor(service);
 						me.showMaklerMenu();
 					}
 					break;
@@ -68,7 +68,7 @@ public class Main {
 					break;
 				case MENU_IMMO:
 					if(ma.authenticate()) {
-						ImmobilienEditor ie = new ImmobilienEditor(service, ma.getLastAuthenticatedMakler());
+						EstateEditor ie = new EstateEditor(service, ma.getLastAuthenticatedMakler());
 						ie.showImmoMenu();
 					}
 					break;

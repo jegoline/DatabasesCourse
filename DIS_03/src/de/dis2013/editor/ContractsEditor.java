@@ -80,9 +80,9 @@ public class ContractsEditor {
 			System.out.println("Tenancy contract "+mv.getContractNumber()+"\n"+
 							"\tSigned on	  "+Helper.dateToString(mv.getDate())+" in "+mv.getPlace()+"\n"+
 							"\tRenter:        "+mv.getContractingPerson().getFirstName()+" "+mv.getContractingPerson().getName()+"\n"+
-							"\tApartment:     "+mv.getApartment().getStrasse()+" "+mv.getApartment().getHausnummer()+", "+mv.getApartment().getPlz()+" "+mv.getApartment().getOrt()+"\n"+
+							"\tApartment:     "+mv.getApartment().getStreet()+" "+mv.getApartment().getStreetNumber()+", "+mv.getApartment().getPostalCode()+" "+mv.getApartment().getCity()+"\n"+
 							"\tStart date:    "+Helper.dateToString(mv.getStartDate())+", Dauer: "+mv.getDuration()+" Monate\n"+
-							"\tRent:   		  "+mv.getApartment().getMietpreis()+" Euro, Addition costs: "+mv.getAdditionalCosts()+" Euro\n");
+							"\tRent:   		  "+mv.getApartment().getRent()+" Euro, Addition costs: "+mv.getAdditionalCosts()+" Euro\n");
 		}
 		
 		System.out.println("");
@@ -96,8 +96,8 @@ public class ContractsEditor {
 			System.out.println("Purchase contract "+kv.getContractNumber()+"\n"+
 							"\tSigned on	  "+Helper.dateToString(kv.getDate())+" in "+kv.getPlace()+"\n"+
 							"\tOwner:         "+kv.getContractingPerson().getFirstName()+" "+kv.getContractingPerson().getName()+"\n"+
-							"\tHouse:         "+kv.getHouse().getStrasse()+" "+kv.getHouse().getHausnummer()+", "+kv.getHouse().getPlz()+" "+kv.getHouse().getOrt()+"\n"+
-							"\tPrice:   	  "+kv.getHouse().getKaufpreis()+" Euro\n"+
+							"\tHouse:         "+kv.getHouse().getStreet()+" "+kv.getHouse().getStreetNumber()+", "+kv.getHouse().getPostalCode()+" "+kv.getHouse().getCity()+"\n"+
+							"\tPrice:   	  "+kv.getHouse().getPrice()+" Euro\n"+
 							"\tNo. of instal.:"+kv.getNoOfInstallments()+", Interest rate: "+kv.getInterestRate()+"%\n");
 		}
 	}
@@ -108,7 +108,7 @@ public class ContractsEditor {
 	 */
 	public void newTenancyContract() {
 		//Alle Wohnungen des Maklers finden
-		Set<Apartment> apartments = service.getAllWohnungenForMakler(estateAgent);
+		Set<Apartment> apartments = service.getAllEstatesForMakler(Apartment.class, estateAgent);
 		
 		//Auswahlmenü für die Wohnungen 
 		AppartmentSelectionMenu asm = new AppartmentSelectionMenu("Choose apartment for contract", apartments);
@@ -127,7 +127,7 @@ public class ContractsEditor {
 			if(pid != PersonSelectionMenu.BACK) {
 				TenancyContract m = new TenancyContract();
 		
-				m.setApartment(service.getWohnungById(wid));
+				m.setApartment(service.getById(Apartment.class, wid));
 				m.setContractingPerson(service.getPersonById(pid));
 				m.setContractNumber(FormUtil.readInt("Contract number"));
 				m.setDate(FormUtil.readDate("Date"));
@@ -148,7 +148,7 @@ public class ContractsEditor {
 	 */
 	public void newPurchaseContract() {
 		//Alle Häuser des Maklers finden
-		Set<House> houses = service.getAllHaeuserForMakler(estateAgent);
+		Set<House> houses = service.getAllEstatesForMakler(House.class, estateAgent);
 		
 		//Auswahlmenü für das Haus
 		HouseSelectionMenu asm = new HouseSelectionMenu("Choose House for Contract", houses);
@@ -167,7 +167,7 @@ public class ContractsEditor {
 			if(pid != PersonSelectionMenu.BACK) {
 				PurchaseContract k = new PurchaseContract();
 		
-				k.setHouse(service.getHausById(hid));
+				k.setHouse(service.getById(House.class, hid));
 				k.setContractingPerson(service.getPersonById(pid));
 				k.setContractNumber(FormUtil.readInt("Contract No."));
 				k.setDate(FormUtil.readDate("Date"));

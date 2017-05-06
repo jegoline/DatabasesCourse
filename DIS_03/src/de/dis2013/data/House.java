@@ -6,40 +6,40 @@ import de.dis2013.util.Helper;
  * Haus-Bean
  */
 public class House extends Estate {
-	private int stockwerke;
-	private int kaufpreis;
-	private boolean garten;
+	private int floors;
+	private double price;
+	private boolean garden;
 	
 	public House() {
 		super();
 	}
 	
-	public int getStockwerke() {
-		return stockwerke;
+	public int getFloors() {
+		return floors;
 	}
-	public void setStockwerke(int stockwerke) {
-		this.stockwerke = stockwerke;
+	public void setFloors(int floors) {
+		this.floors = floors;
 	}
-	public int getKaufpreis() {
-		return kaufpreis;
+	public double getPrice() {
+		return price;
 	}
-	public void setKaufpreis(int kaufpreis) {
-		this.kaufpreis = kaufpreis;
+	public void setPrice(double kaufpreis) {
+		this.price = kaufpreis;
 	}
-	public boolean isGarten() {
-		return garten;
+	public boolean isGarden() {
+		return garden;
 	}
-	public void setGarten(boolean garten) {
-		this.garten = garten;
+	public void setGarden(boolean garden) {
+		this.garden = garden;
 	}
 	
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
 		
-		result = prime * result + getStockwerke();
-		result = prime * result + getKaufpreis();
-		result = prime * result + ((isGarten()) ? 1 : 0);
+		result = prime * result + getFloors();
+		result = prime * result + Double.hashCode(getPrice());
+		result = prime * result + ((isGarden()) ? 1 : 0);
 		
 		return result;
 	}
@@ -54,14 +54,14 @@ public class House extends Estate {
 		House other = (House)obj;
 	
 		if(other.getId() != getId() ||
-				other.getPlz() != getPlz() ||
-				other.getFlaeche() != getFlaeche() ||
-				!Helper.compareObjects(this.getOrt(), other.getOrt()) ||
-				!Helper.compareObjects(this.getStrasse(), other.getStrasse()) ||
-				!Helper.compareObjects(this.getHausnummer(), other.getHausnummer()) ||
-				getStockwerke() != other.getStockwerke() ||
-				getKaufpreis() != other.getKaufpreis() ||
-				isGarten() != other.isGarten())
+				other.getPostalCode() != getPostalCode() ||
+				other.getSquareArea() != getSquareArea() ||
+				!Helper.compareObjects(this.getCity(), other.getCity()) ||
+				!Helper.compareObjects(this.getStreet(), other.getStreet()) ||
+				!Helper.compareObjects(this.getStreetNumber(), other.getStreetNumber()) ||
+				getFloors() != other.getFloors() ||
+				getPrice() != other.getPrice() ||
+				isGarden() != other.isGarden())
 		{
 			return false;
 		}
