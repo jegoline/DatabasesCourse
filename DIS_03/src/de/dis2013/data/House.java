@@ -1,5 +1,7 @@
 package de.dis2013.data;
 
+import java.util.Set;
+
 import de.dis2013.util.Helper;
 
 /**
@@ -9,6 +11,7 @@ public class House extends Estate {
 	private int floors;
 	private double price;
 	private boolean garden;
+	private PurchaseContract purchaseContract;
 	
 	public House() {
 		super();
@@ -42,6 +45,14 @@ public class House extends Estate {
 		result = prime * result + ((isGarden()) ? 1 : 0);
 		
 		return result;
+	}
+	
+	public PurchaseContract getPurchaseContract() {
+		return purchaseContract;
+	}
+
+	public void setPurchaseContract(PurchaseContract purchaseContract) {
+		this.purchaseContract = purchaseContract;
 	}
 	
 	public boolean equals(Object obj) {

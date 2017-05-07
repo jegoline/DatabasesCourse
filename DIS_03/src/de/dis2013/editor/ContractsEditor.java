@@ -72,33 +72,34 @@ public class ContractsEditor {
 	
 	public void viewContracts() {
 		//Mietverträge anzeigen
-		System.out.println("Mietverträge\n-----------------");
-		Set<TenancyContract> mvs = service.getAllTenancyContractsForEstateAgent(estateAgent);
+		System.out.println("Rental Contracts\n-----------------");
+		Set<TenancyContract> mvs = service.getAllTenancyContractsForEstateAgent(TenancyContract.class,estateAgent);
 		Iterator<TenancyContract> itmv = mvs.iterator();
 		while(itmv.hasNext()) {
 			TenancyContract mv = itmv.next();
 			System.out.println("Tenancy contract "+mv.getContractNumber()+"\n"+
-							"\tSigned on	  "+Helper.dateToString(mv.getDate())+" in "+mv.getPlace()+"\n"+
-							"\tRenter:        "+mv.getContractingPerson().getFirstName()+" "+mv.getContractingPerson().getName()+"\n"+
-							"\tApartment:     "+mv.getApartment().getStreet()+" "+mv.getApartment().getStreetNumber()+", "+mv.getApartment().getPostalCode()+" "+mv.getApartment().getCity()+"\n"+
-							"\tStart date:    "+Helper.dateToString(mv.getStartDate())+", Dauer: "+mv.getDuration()+" Monate\n"+
-							"\tRent:   		  "+mv.getApartment().getRent()+" Euro, Addition costs: "+mv.getAdditionalCosts()+" Euro\n");
+							"\tSigned on\t		"+Helper.dateToString(mv.getDate())+" in "+mv.getPlace()+"\n"+
+							"\tTenant:\t\t		"+mv.getContractingPerson().getFirstName()+" "+mv.getContractingPerson().getName()+"\n"+
+							"\tApartment:\t\t	"+mv.getApartment().getStreet()+" "+mv.getApartment().getStreetNumber()+", "+mv.getApartment().getPostalCode()+" "+mv.getApartment().getCity()+"\n"+
+							"\tStart date:\t	"+Helper.dateToString(mv.getStartDate())+", Duration: "+mv.getDuration()+" Monate\n"+
+							"\tRent:\t			"+mv.getApartment().getRent()+" Euro, Addition costs: "+mv.getAdditionalCosts()+" Euro\n"+
+							" ");
 		}
 		
 		System.out.println("");
 		
 		//Kaufverträge anzeigen
 		System.out.println("Purchase Contracts\n-----------------");
-		Set<PurchaseContract> kvs = service.getAllPurchaseContractsForEstateAgent(estateAgent);
+		Set<PurchaseContract> kvs = service.getAllPurchaseContractsForEstateAgent(PurchaseContract.class, estateAgent);
 		Iterator<PurchaseContract> itkv = kvs.iterator();
 		while(itkv.hasNext()) {
 			PurchaseContract kv = itkv.next();
 			System.out.println("Purchase contract "+kv.getContractNumber()+"\n"+
-							"\tSigned on	  "+Helper.dateToString(kv.getDate())+" in "+kv.getPlace()+"\n"+
-							"\tOwner:         "+kv.getContractingPerson().getFirstName()+" "+kv.getContractingPerson().getName()+"\n"+
-							"\tHouse:         "+kv.getHouse().getStreet()+" "+kv.getHouse().getStreetNumber()+", "+kv.getHouse().getPostalCode()+" "+kv.getHouse().getCity()+"\n"+
-							"\tPrice:   	  "+kv.getHouse().getPrice()+" Euro\n"+
-							"\tNo. of instal.:"+kv.getNoOfInstallments()+", Interest rate: "+kv.getInterestRate()+"%\n");
+							"\tSigned on\t		"+Helper.dateToString(kv.getDate())+" in "+kv.getPlace()+"\n"+
+							"\tOwner:\t\t		"+kv.getContractingPerson().getFirstName()+" "+kv.getContractingPerson().getName()+"\n"+
+							"\tHouse:\t\t		"+kv.getHouse().getStreet()+" "+kv.getHouse().getStreetNumber()+", "+kv.getHouse().getPostalCode()+" "+kv.getHouse().getCity()+"\n"+
+							"\tPrice:\t			"+kv.getHouse().getPrice()+" Euro\n"+
+							"\tNo. of instal.:\t"+kv.getNoOfInstallments()+", Interest rate: "+kv.getInterestRate()+"%\n");
 		}
 	}
 	
@@ -128,7 +129,7 @@ public class ContractsEditor {
 				TenancyContract m = new TenancyContract();
 		
 				m.setApartment(service.getById(Apartment.class, wid));
-				m.setContractingPerson(service.getPersonById(pid));
+				m.setContractingPerson(service.getById(Person.class,pid));
 				m.setContractNumber(FormUtil.readInt("Contract number"));
 				m.setDate(FormUtil.readDate("Date"));
 				m.setPlace(FormUtil.readString("Place"));
@@ -136,7 +137,7 @@ public class ContractsEditor {
 				m.setDuration(FormUtil.readInt("Duration in months"));
 				m.setAdditionalCosts(FormUtil.readInt("Additional costs"));
 				
-				service.addTenancyContract(m);
+				service.add(m);
 				
 				System.out.println("Rental contract with ID "+m.getId()+" was added.");
 			}
@@ -168,14 +169,14 @@ public class ContractsEditor {
 				PurchaseContract k = new PurchaseContract();
 		
 				k.setHouse(service.getById(House.class, hid));
-				k.setContractingPerson(service.getPersonById(pid));
+				k.setContractingPerson(service.getById(Person.class,pid));
 				k.setContractNumber(FormUtil.readInt("Contract No."));
 				k.setDate(FormUtil.readDate("Date"));
 				k.setPlace(FormUtil.readString("Place"));
 				k.setNoOfInstallments(FormUtil.readInt("No. of installments"));
 				k.setInterestRate(FormUtil.readInt("Interest rate"));
 				
-				service.addPurchaseContract(k);
+				service.add(k);
 				
 				System.out.println("Purchase contract with ID "+k.getId()+" was added.");
 			}

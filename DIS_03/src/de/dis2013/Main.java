@@ -36,10 +36,10 @@ public class Main {
 		//Erzeuge Menü
 		Menu mainMenu = new Menu("Main menu");
 		mainMenu.addEntry("Agents management", MENU_MAKLER);
-		mainMenu.addEntry("Personen-Verwaltung", MENU_PERSON);
+		mainMenu.addEntry("Person Management", MENU_PERSON);
 		mainMenu.addEntry("Estate Management", MENU_IMMO);
-		mainMenu.addEntry("Vertragsmenü", MENU_VERTRAG);
-		mainMenu.addEntry("Beenden", QUIT);
+		mainMenu.addEntry("Contract Management", MENU_VERTRAG);
+		mainMenu.addEntry("Quit", QUIT);
 		
 		//Authentifizierungsmöglichkeiten
 		PropertiesFileAuthenticator pfa = new PropertiesFileAuthenticator("admin.properties");

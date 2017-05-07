@@ -80,7 +80,7 @@ public class Menu {
 			}
 			
 			if(selection < 1 || selection > returnValues.size()) {
-				System.err.println("Ungültige Eingabe!");
+				System.err.println("Incorrect entry!");
 				selection = -1;
 			} 
 		}

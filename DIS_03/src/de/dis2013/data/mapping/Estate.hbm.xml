@@ -19,6 +19,7 @@
 			<property name="floors" type="integer" column="floors" />
 			<property name="price" type="double" column="price" />
 			<property name="garden" type="boolean" column="garden" />
+			<one-to-one name="purchaseContract" class="de.dis2013.data.PurchaseContract"  property-ref="house" cascade="all" />
 		</joined-subclass>
   
 		<joined-subclass name="de.dis2013.data.Apartment" table="apartment">
@@ -28,6 +29,7 @@
 			<property name="rooms" type="integer" column="rooms" />
 			<property name="balcony" type="boolean" column="balcony" />
 			<property name="builtinKitchen" type="boolean" column="builtin_kitchen" />
+			<one-to-one name="tenancyContract" class="de.dis2013.data.TenancyContract"  property-ref="apartment" cascade="all" />
 		</joined-subclass>
 	</class>
 </hibernate-mapping>

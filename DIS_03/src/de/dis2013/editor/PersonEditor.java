@@ -64,7 +64,7 @@ public class PersonEditor {
 		p.setFirstName(FormUtil.readString("First name"));
 		p.setName(FormUtil.readString("Name"));
 		p.setAddress(FormUtil.readString("Address"));
-		service.addPerson(p);
+		service.add(p);
 		
 		System.out.println("Person with ID "+p.getId()+" was added.");
 	}
@@ -80,7 +80,7 @@ public class PersonEditor {
 		//Person edit
 		if(id != PersonSelectionMenu.BACK) {
 			//Person load
-			Person p = service.getPersonById(id);
+			Person p = service.getById(Person.class, id);
 			System.out.println("Person "+p.getFirstName()+" "+p.getName()+" was edited. Empty fields remain unchanged.");
 			
 			//New Data acquisition
@@ -95,6 +95,7 @@ public class PersonEditor {
 				p.setName(newNachname);
 			if(!newAddress.equals(""))
 				p.setAddress(newAddress);
+			service.update(p);
 		}
 	}
 	
@@ -109,8 +110,8 @@ public class PersonEditor {
 		
 		//Löschen, falls nicht "zurück" gewählt wurde
 		if(id != PersonSelectionMenu.BACK) {
-			Person p = service.getPersonById(id);
-			service.deletePerson(p);
+			Person p = service.getById(Person.class,id);
+			service.delete(p);
 		}
 	}
 }
