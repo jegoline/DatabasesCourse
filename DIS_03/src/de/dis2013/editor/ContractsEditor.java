@@ -156,7 +156,7 @@ public class ContractsEditor {
 		int hid = asm.show();
 		
 		//Falls kein Abbruch: Auswahl der Person
-		if(hid != AppartmentSelectionMenu.BACK) {
+		if(hid != HouseSelectionMenu.BACK) {
 			//Alle Personen laden
 			Set<Person> persons = service.getAllPersons();
 			

@@ -195,44 +195,44 @@ public class ImmoService {
 		session.getTransaction().commit();
 		
 		//Hibernate Session erzeugen
-		session.beginTransaction();
-		House h = new House();
-		h.setCity("Hamburg");
-		h.setPostalCode(22527);
-		h.setStreet("Vogt-Kölln-Straße");
-		h.setStreetNumber("2a");
-		h.setSquareArea(384);
-		h.setFloors(5);
-		h.setPrice(10000000);
-		h.setGarden(true);
-		h.setAgent(m);
-		
-		session.save(h);
-		session.getTransaction().commit();
-		session.close();
-		//Hibernate Session erzeugen
-		session = sessionFactory.openSession();
-		session.beginTransaction();
-		EstateAgent m2 = (EstateAgent)session.get(EstateAgent.class, m.getId());
-		Set<Estate> immos = m2.getEstates();
-		Iterator<Estate> it = immos.iterator();
-		
-		while(it.hasNext()) {
-			Estate i = it.next();
-			System.out.println("Immo: "+i.getCity());
-		}
-		session.beginTransaction();
-		Apartment w = new Apartment();
-		w.setCity("Hamburg");
-		w.setPostalCode(22527);
-		w.setStreet("Vogt-Kölln-Straße");
-		w.setStreetNumber("3");
-		w.setSquareArea(120);
-		w.setFloor(4);
-		w.setRent(790);
-		w.setBuiltinKitchen(true);
-		w.setBalcony(false);
-		w.setAgent(m);
+//		session.beginTransaction();
+//		House h = new House();
+//		h.setCity("Hamburg");
+//		h.setPostalCode(22527);
+//		h.setStreet("Vogt-Kölln-Straße");
+//		h.setStreetNumber("2a");
+//		h.setSquareArea(384);
+//		h.setFloors(5);
+//		h.setPrice(10000000);
+//		h.setGarden(true);
+//		h.setAgent(m);
+//		
+//		session.save(h);
+//		session.getTransaction().commit();
+//		session.close();
+//		//Hibernate Session erzeugen
+//		session = sessionFactory.openSession();
+//		session.beginTransaction();
+//		EstateAgent m2 = (EstateAgent)session.get(EstateAgent.class, m.getId());
+//		Set<Estate> immos = m2.getEstates();
+//		Iterator<Estate> it = immos.iterator();
+//		
+//		while(it.hasNext()) {
+//			Estate i = it.next();
+//			System.out.println("Immo: "+i.getCity());
+//		}
+//		session.beginTransaction();
+//		Apartment w = new Apartment();
+//		w.setCity("Hamburg");
+//		w.setPostalCode(22527);
+//		w.setStreet("Vogt-Kölln-Straße");
+//		w.setStreetNumber("3");
+//		w.setSquareArea(120);
+//		w.setFloor(4);
+//		w.setRent(790);
+//		w.setBuiltinKitchen(true);
+//		w.setBalcony(false);
+//		w.setAgent(m);
 		
 //		w = new Apartment();
 //		w.setCity("Berlin");
@@ -246,35 +246,35 @@ public class ImmoService {
 //		w.setBalcony(false);
 //		w.setAgent(m);
 		
-		session.save(w);
-		session.getTransaction().commit();
-		
-		
-		session.beginTransaction();
-		
-		PurchaseContract kv = new PurchaseContract();
-		kv.setHouse(h);
-		kv.setContractingPerson(p1);
-		kv.setContractNumber(9234);
-		kv.setDate(new Date(System.currentTimeMillis()));
-		kv.setPlace("Hamburg");
-		kv.setNoOfInstallments(5);
-		kv.setInterestRate(4);
-		session.save(kv);
-		
-		
-		TenancyContract mv = new TenancyContract();
-		mv.setApartment(w);
-		mv.setContractingPerson(p2);
-		mv.setContractNumber(23112);
-		mv.setDate(new Date(System.currentTimeMillis()-1000000000));
-		mv.setPlace("Berlin");
-		mv.setStartDate(new Date(System.currentTimeMillis()));
-		mv.setAdditionalCosts(65);
-		mv.setDuration(36);
-		session.save(mv);
-		
-		session.getTransaction().commit();
+//		session.save(w);
+//		session.getTransaction().commit();
+//		
+//		
+//		session.beginTransaction();
+//		
+//		PurchaseContract kv = new PurchaseContract();
+//		kv.setHouse(h);
+//		kv.setContractingPerson(p1);
+//		kv.setContractNumber(9234);
+//		kv.setDate(new Date(System.currentTimeMillis()));
+//		kv.setPlace("Hamburg");
+//		kv.setNoOfInstallments(5);
+//		kv.setInterestRate(4);
+//		session.save(kv);
+//		
+//		
+//		TenancyContract mv = new TenancyContract();
+//		mv.setApartment(w);
+//		mv.setContractingPerson(p2);
+//		mv.setContractNumber(23112);
+//		mv.setDate(new Date(System.currentTimeMillis()-1000000000));
+//		mv.setPlace("Berlin");
+//		mv.setStartDate(new Date(System.currentTimeMillis()));
+//		mv.setAdditionalCosts(65);
+//		mv.setDuration(36);
+//		session.save(mv);
+//		
+//		session.getTransaction().commit();
 		
 		
 		//close session

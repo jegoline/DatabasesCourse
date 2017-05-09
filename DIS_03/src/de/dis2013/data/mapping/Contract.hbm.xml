@@ -7,24 +7,24 @@
 		<id name="id" column="id">
 			<generator class="increment" />
 		</id>
-		<property name="contractNumber" type="integer" column="contract_number" />
+		<property name="contractNumber" type="integer" column="contract_number" unique="true"/>
 		<property name="date" type="date" column="date" />
 		<property name="place" type="string" column="place" />
-		<many-to-one name="contractingPerson" class="de.dis2013.data.Person" column="contracting_person_id" not-null="true" cascade="all" />
+		<many-to-one name="contractingPerson" class="de.dis2013.data.Person" column="contracting_person_id" cascade="save-update" />
 		
 		<joined-subclass name="de.dis2013.data.TenancyContract" table="tenancy_contract">
 			<key column="id"/>
 			<property name="startDate" type="date" column="start_date" />
 			<property name="duration" type="integer" column="duration" />
 			<property name="additionalCosts" type="integer" column="additional_costs" />
-			<many-to-one name="apartment" class="de.dis2013.data.Apartment"  column="apartment_id"  not-null="true" cascade="save-update" unique="true"  /> 			
+			<many-to-one name="apartment" class="de.dis2013.data.Apartment"  column="apartment_id" cascade="save-update" unique="true"  /> 			
 		</joined-subclass>
 		
 		<joined-subclass name="de.dis2013.data.PurchaseContract" table="purchase_contract">
 			<key column="id"/>
 			<property name="noOfInstallments" type="integer" column="no_of_installments" />
 			<property name="interestRate" type="integer" column="interest_rate" />
-			<many-to-one name="house" class="de.dis2013.data.House"  column="house_id"  not-null="true" cascade="save-update" unique="true"  /> 
+			<many-to-one name="house" class="de.dis2013.data.House"  column="house_id"  cascade="save-update" unique="true"  /> 
 		</joined-subclass>
 	</class>
 </hibernate-mapping>
