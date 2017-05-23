@@ -19,6 +19,6 @@ public class AppartmentSelectionMenu extends Menu {
 			Apartment w = it.next();
 			addEntry(w.getStreet()+" "+w.getStreetNumber()+", "+w.getPostalCode()+" "+w.getCity(), w.getId());
 		}
-		addEntry("Zurück", BACK);
+		addEntry("Back", BACK);
 	}
 }

@@ -61,9 +61,14 @@ public class EstateAgentEditor {
 		m.setAddress(FormUtil.readString("Address"));
 		m.setLogin(FormUtil.readString("Login"));
 		m.setPassword(FormUtil.readString("Password"));
-		service.add(m);
 		
-		System.out.println("Agent with ID " + m.getId() + " was added.");
+		EstateAgent prev = service.getMaklerByLogin(m.getLogin());
+		if (prev != null) {
+			System.out.println("Sorry, agent with login " + m.getLogin() + " already exists!");
+		} else {
+			service.add(m);
+			System.out.println("Agent with ID " + m.getId() + " was added.");
+		}
 	}
 	
 	/**

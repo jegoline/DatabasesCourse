@@ -1,7 +1,5 @@
 package de.dis2013.data;
 
-import java.util.Set;
-
 import de.dis2013.util.Helper;
 
 /**

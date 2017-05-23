@@ -6,7 +6,6 @@ import de.dis2013.core.ImmoService;
 import de.dis2013.data.Apartment;
 import de.dis2013.data.EstateAgent;
 import de.dis2013.data.House;
-import de.dis2013.data.PurchaseContract;
 import de.dis2013.menu.AppartmentSelectionMenu;
 import de.dis2013.menu.HouseSelectionMenu;
 import de.dis2013.menu.Menu;
@@ -170,7 +169,6 @@ public class EstateEditor {
 		if (id != HouseSelectionMenu.BACK) {
 			House h = service.getById(House.class, id);
 			service.delete(h);
-			
 		}
 	}
 
@@ -251,6 +249,7 @@ public class EstateEditor {
 
 			w.setBuiltinKitchen(newBuiltInKitchen);
 			w.setBalcony(newBalcony);
+			
 			service.update(w);
 		}
 	}
