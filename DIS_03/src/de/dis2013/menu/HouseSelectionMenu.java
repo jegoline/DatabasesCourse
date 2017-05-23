@@ -19,6 +19,6 @@ public class HouseSelectionMenu extends Menu {
 			House h = it.next();
 			addEntry(h.getStreet()+" "+h.getStreetNumber()+", "+h.getPostalCode()+" "+h.getCity(), h.getId());
 		}
-		addEntry("Zurück", BACK);
+		addEntry("Back", BACK);
 	}
 }
