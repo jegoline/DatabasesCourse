@@ -14,13 +14,6 @@
 		<property name="squareArea" type="integer" column="square_area" />
 		<many-to-one name="agent" class="de.dis2013.data.EstateAgent" column="estate_agent_id"/>
 		
-		<joined-subclass name="de.dis2013.data.House" table="house">
-			<key column="id"/>
-			<property name="floors" type="integer" column="floors" />
-			<property name="price" type="double" column="price" />
-			<property name="garden" type="boolean" column="garden" />
-			<one-to-one name="purchaseContract" class="de.dis2013.data.PurchaseContract"  property-ref="house" cascade="all" />
-		</joined-subclass>
   
 		<joined-subclass name="de.dis2013.data.Apartment" table="apartment">
 			<key column="id"/>
@@ -30,6 +23,14 @@
 			<property name="balcony" type="boolean" column="balcony" />
 			<property name="builtinKitchen" type="boolean" column="builtin_kitchen" />
 			<one-to-one name="tenancyContract" class="de.dis2013.data.TenancyContract"  property-ref="apartment" cascade="all" />
+		</joined-subclass>
+		
+		<joined-subclass name="de.dis2013.data.House" table="house">
+			<key column="id"/>
+			<property name="floors" type="integer" column="floors" />
+			<property name="price" type="double" column="price" />
+			<property name="garden" type="boolean" column="garden" />
+			<one-to-one name="purchaseContract" class="de.dis2013.data.PurchaseContract"  property-ref="house" cascade="all" />
 		</joined-subclass>
 	</class>
 </hibernate-mapping>
