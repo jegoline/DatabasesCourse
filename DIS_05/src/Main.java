@@ -17,9 +17,12 @@ public class Main {
 
 	public static void main(String... args) {
 		int numOfClients = 10;
+		int numOfPagesPerClient = 5;
 		for (int cl = 0; cl < numOfClients; cl++) {
-			Thread thread = createThread(cl, cl * 20, cl * 20 + 19);
-			thread.run();
+			int startIndex = cl * numOfPagesPerClient;
+			int endIndex = cl * numOfPagesPerClient + numOfPagesPerClient - 1;
+			
+			createThread(cl, startIndex, endIndex).start();
 		}
 	}
 }
