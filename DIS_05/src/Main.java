@@ -16,7 +16,7 @@ public class Main {
 	}
 
 	public static void main(String... args) {
-		int numOfClients = 10;
+		int numOfClients = 5;
 		int numOfPagesPerClient = 5;
 		for (int cl = 0; cl < numOfClients; cl++) {
 			int startIndex = cl * numOfPagesPerClient;
