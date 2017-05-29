@@ -32,7 +32,7 @@ public class PersistenceManager {
 		try {
 			System.out.println("Performing recovery..");
 			recovery();
-			System.exit(0);
+			//System.exit(0);
 		} catch (IOException e) {
 			System.err.println("Ooops! Something goes wrong!");
 			e.printStackTrace();
