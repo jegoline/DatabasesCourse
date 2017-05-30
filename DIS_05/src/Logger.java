@@ -4,6 +4,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -11,9 +12,11 @@ import java.util.stream.Collectors;
 public class Logger {
 	private int currentLSN = 0;
 	private FileWriter logFile;
-
+	private String logFilePath = "dbms/log_file.txt";
+	private File file;
+	
 	public Logger() {
-		File file = new File("dbms/log_file.txt");
+		file = new File(logFilePath);
 		try {
 			file.createNewFile();
 			logFile = new FileWriter(file, true); // append mode
@@ -68,7 +71,7 @@ public class Logger {
 	}
 
 	private List<String> loadByPredicate(Predicate<String> predicate) {
-		File file = new File("dbms/log_file.txt");
+		//File file = new File("dbms/log_file.txt");
 		List<String> logs = new ArrayList<>();
 		try {
 			try (BufferedReader br = new BufferedReader(new FileReader(file))) {
@@ -85,8 +88,45 @@ public class Logger {
 		return logs;
 	}
 
-	public void clean(long taid) {
-		// TODO Auto-generated method stub
+	public void clean(long lsn, long taid) {
+		
+		List<String> cleanLogs = loadByPredicate(p -> !p.contains(Long.toString(lsn) + "," + Long.toString(taid)));
+		// This is a very bad way to do it. Quick workaround COME BACK HERE
+		// beginning of brainfart
+		// count the occurances of taid, if exactly equal to 2, remove them from list
+		int taidCounter = 0;
+		for (String str: cleanLogs){
+			if (str.contains(Long.toString(taid))) {
+			taidCounter++;
+			}
+			if (taidCounter > 2)
+			{break;}
+		}
+		if (taidCounter == 2) {
+		for (Iterator<String> iter = cleanLogs.listIterator(); iter.hasNext(); ) {
+		    String a = iter.next();
+		    if (a.contains(Long.toString(taid))) {
+		        iter.remove();
+		    }
+		}
+		}
+		//end of brainfart
+		
+		try {
+	    FileWriter newLogFile = new FileWriter(file, false); // no append
+		synchronized (newLogFile) {
+			for(String str: cleanLogs) {
+				newLogFile.write(str + "\n");
+				}
+			
+			newLogFile.flush();
+			newLogFile.close();
+		}
+		
+		}
+		catch (IOException e){
+			e.printStackTrace();
+		}
 
 	}
 

@@ -110,7 +110,7 @@ public class PersistenceManager {
 
 					// as soon as info is propagated to permanent DB => we do
 					// not need this log entry anymore for redo
-					logger.clean(entry.getValue().taid);
+					logger.clean(entry.getValue().lsn,entry.getValue().taid);
 				}
 			}
 		} catch (IOException ex) {
