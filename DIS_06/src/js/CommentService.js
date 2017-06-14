@@ -7,11 +7,9 @@ class CommentService {
      * @param {Object} [movie] The reference to the movie object
      */
     streamComments(movie) {
-        //TODO
         let query = db.MovieComment.find()
-            .where({ 'id': { '$exists' : true } })
-			.sort({ 'id': -1 });
-
+            .equal('movie', movie.id)
+			.sort({'id': -1 });
         return query.resultStream()
     }
 
@@ -23,13 +21,25 @@ class CommentService {
      * @param {string} [args.limit=10] Max results
      */
     queryComments(args) {
-        let query = db.MovieComment.find()
-		.where({ 'id': { '$exists' : true } })
-		.sort({ 'id': -1 })
-		.limit(new Number(args.limit));
+        let query = ''
 
         switch (args.type) {
-            //TODO
+		case "prefix":
+			var regexBuilder = new RegExp('^' + args.parameter.trim());
+			query = db.MovieComment.find()
+				.matches('username', regexBuilder)
+				.sort({ 'id': -1 })
+				.limit(new Number(args.limit));
+			break;
+        case "keyword":	
+			var regexBuilder = new RegExp('^.*' + args.parameter.trim() + '.*');
+		    query = db.MovieComment.find();
+				
+			var cond1 = query.matches('username', regexBuilder);
+			var cond2 = query.matches('text', regexBuilder);
+			
+			query = query.or(cond1, cond2).sort({ 'id': -1 }).limit(new Number(args.limit));
+			break;
         }
 
         return query.resultList({depth: 1}); // with depth: 1, the referenced movies will be loaded
@@ -43,8 +53,9 @@ class CommentService {
      * @param {string} [comment.text] The comment text
      */
     addComment(movie, comment) {
-        //TODO
-        alert("Comment adding not implemented, yet!");
+		var com = new db.MovieComment({username: comment.username, text: comment.text});
+		com.movie = movie;
+		com.save();
     }
 
     /**
@@ -53,8 +64,12 @@ class CommentService {
      * @param {String} [newText] The new text
      */
     editComment(comment, newText) {
-        //TODO
-        alert("Comment editing not implemented, yet!");
+        comment.text = newText;
+		comment.update().then(function() {
+			//the comment was updated
+		}, function(e) {
+			alert("We can't update your comment :(");
+		});
     }
 
 }
