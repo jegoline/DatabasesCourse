@@ -1,0 +1,86 @@
+package etl;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class DB2Loader {
+	
+	public void loadShops() throws SQLException {
+		Connection con = DB2ConnectionManager.getInstance().getConnection();
+		PreparedStatement selectStmt = null;
+		PreparedStatement insertStmt = null;
+		try {
+			String selectSQL = "select shop.name as shop_name, stadt.name as stadt_name, region.name as region_name, land.name as land_name "
+				+ "from DB2INST1.shopid as shop "
+				+ "join DB2INST1.stadtid as stadt "
+				+ "on stadt.stadtid = shop.stadtid "
+				+ "join DB2INST1.regionid as region "
+				+ "on region.regionid = stadt.regionid "
+				+ "join DB2INST1.landid as land "
+				+ "on land.landid = region.landid";
+			selectStmt = con.prepareStatement(selectSQL);
+			ResultSet rs = selectStmt.executeQuery();
+			   
+			con.setAutoCommit(false);
+			String insertProductSQL = "INSERT INTO shop_dim(shop_name, stadt_name, region_name, land_name) VALUES (?, ?, ?, ?)";
+			insertStmt = con.prepareStatement(insertProductSQL);
+			
+			while (rs.next()) {
+				insertStmt.setString(1, rs.getString("shop_name"));
+				insertStmt.setString(2, rs.getString("stadt_name"));
+				insertStmt.setString(3, rs.getString("region_name"));
+				insertStmt.setString(4, rs.getString("land_name"));
+				insertStmt.addBatch();
+			}
+			
+			insertStmt.executeBatch();
+			con.commit();
+		} finally {
+			con.setAutoCommit(true);
+			if (selectStmt != null) {
+				selectStmt.close();
+				insertStmt.close();
+			}
+		}
+	}
+
+	public void loadProducts() throws SQLException {
+		Connection con = DB2ConnectionManager.getInstance().getConnection();
+		PreparedStatement selectStmt = null;
+		PreparedStatement insertStmt= null;
+		try {
+			String selectSQL = "select article.name as article_name, gr.name as group_name, fam.name as family_name, cat.name as category_name " 
+					+ "from DB2INST1.articleid as article "
+					+ "join DB2INST1.productgroupid as gr "
+					+ "on gr.productgroupid = article.productgroupid " 
+					+ "join DB2INST1.productfamilyid as fam "
+					+ "on gr.productfamilyid= fam.productfamilyid " 
+					+ "join DB2INST1.productcategoryid as cat "
+					+ "on cat.productcategoryid = fam.productcategoryid";
+			selectStmt = con.prepareStatement(selectSQL);
+			ResultSet rs = selectStmt.executeQuery();
+
+			con.setAutoCommit(false);
+			String insertProductSQL = "INSERT INTO product_dim(article_name, group_name, family_name, category_name) VALUES (?, ?, ?, ?)";
+			insertStmt = con.prepareStatement(insertProductSQL);
+			while (rs.next()) {
+				insertStmt.setString(1, rs.getString("article_name"));
+				insertStmt.setString(2, rs.getString("group_name"));
+				insertStmt.setString(3, rs.getString("family_name"));
+				insertStmt.setString(4, rs.getString("category_name"));
+
+				insertStmt.addBatch();
+			}
+			insertStmt.executeBatch();
+			con.commit();
+		} finally {
+			con.setAutoCommit(true);
+			if (selectStmt != null) {
+				selectStmt.close();
+				insertStmt.close();
+			}
+		}
+	}
+}

@@ -35,6 +35,8 @@ class MovieService {
 		.sort({ 'id': -1 })
         return query.singleResult();
     }
+	
+	
 
     /**
      * Queries movies filtered by the query arguments
@@ -84,9 +86,34 @@ class MovieService {
 				.sort({ 'id': -1 })
 				.limit(new Number(args.limit));
 				break;
-			case "comment":
-				//TODO - should take username as parameter
-				break;
+			case "comments":
+				let queryPromise = new Promise((resolve, reject) => {
+					var regexBuilder = new RegExp('^' + args.parameter.trim());
+					var userQuery = db.MovieComment.find().matches('username', regexBuilder);
+					let movieList = [];
+					
+					userQuery.resultList((object) => {
+						var movieList = [];
+						object.forEach((itr) => {
+							if(itr.movie){
+								if(itr.movie.id){
+									movieList.push(itr.movie.id.trim());
+								}
+							}
+						});
+						
+						query = db.Movie.find()
+							.containsAny('id', movieList) 
+							.sort({ 'id': -1 })
+							.limit(new Number(args.limit));
+							
+						query.resultList((object) => {
+							resolve(object);
+						});
+					});
+				});
+				return queryPromise;
+
 			default:
 				query = db.Movie.find()
 				.where({ 'id': { '$exists' : true } })
