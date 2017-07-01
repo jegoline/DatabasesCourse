@@ -1,9 +1,18 @@
 package etl;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 public class DB2Loader {
 	
@@ -83,4 +92,71 @@ public class DB2Loader {
 			}
 		}
 	}
+	
+	public void loadSales() throws SQLException {
+        String csvFile = "csv/sales_transformed.csv";
+        BufferedReader br = null;
+        String line = "";
+        String cvsSplitDelimeter = ";";
+        int initialSkipLines = 1;
+        
+		Connection con = DB2ConnectionManager.getInstance().getConnection();
+		PreparedStatement insertStmt= null;
+		
+		con.setAutoCommit(false);
+		String insertSalesSQL = "INSERT INTO sales"
+				+ "(fk_time_id, fk_shop_id, fk_article_id, items_sold, amount) VALUES (?, ?, ?, ?, ?)";
+		insertStmt = con.prepareStatement(insertSalesSQL);
+		int iterationCounter = 0;
+        try {
+
+            br = new BufferedReader(new FileReader(csvFile));
+            for(int i=0; i < initialSkipLines; i++){
+            	br.readLine();
+            }
+              
+            while ((line = br.readLine()) != null) {
+
+                // use semicolon as separator
+                String[] column = line.split(cvsSplitDelimeter);
+                
+                
+                // insert items in SQL statement
+                iterationCounter++;
+                
+    			insertStmt.setInt(1, Integer.parseInt(column[0]));
+    			insertStmt.setInt(2, Integer.parseInt(column[1]));
+    			insertStmt.setInt(3, Integer.parseInt(column[2]));
+    			insertStmt.setInt(4, Integer.parseInt(column[3]));
+    			insertStmt.setDouble(5, Double.parseDouble(column[4]));
+    			
+    			insertStmt.addBatch();
+            }
+            
+            insertStmt.executeBatch();
+			con.commit();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+            
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    System.err.println("Error on line : " + iterationCounter);
+                }
+            }
+            
+            con.setAutoCommit(true);
+			if (insertStmt != null) {
+				insertStmt.close();
+			}
+			
+        }
+
+    }
 }
