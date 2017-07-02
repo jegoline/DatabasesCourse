@@ -34,6 +34,7 @@ public class CSVTransformer {
         String line = "";
         String cvsSplitDelimeter = ";";
         int headerLines = 1;
+        int lineCounter = 0;
         
         ShopJDBC shopJDBC = new ShopJDBC();
         ProductJDBC productJDBC = new ProductJDBC();
@@ -43,6 +44,7 @@ public class CSVTransformer {
         List<Shop> shops = shopJDBC.loadAll();
         List<Product> products = productJDBC.loadAll();
         List<Time> times = timeJDBC.loadAll();
+        
         
         BufferedWriter bw = null;
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
@@ -59,7 +61,8 @@ public class CSVTransformer {
 
                 // use semicolon as separator
                 String[] column = line.split(cvsSplitDelimeter);
-                
+                lineCounter += 1;
+                boolean pursueWrite = true;
                 
                 int shopId = -1;
                 int productId = -1;
@@ -87,16 +90,34 @@ public class CSVTransformer {
                 Time receivedTime = null;
                 
                 if (timeId == -1){
-                	Time parsedTime = createTime(column[0]);
+                	Time parsedTime = createTime(column[0], lineCounter);
+                	if (parsedTime == null){
+                		System.out.println("\"" + column[0] + "\""  + " is not of a correct format. " +
+                    			" Change to dd.MM.yyyy . This item will be skipped.");
+                    	pursueWrite = false;
+                	}
                 	receivedTime = timeJDBC.insert(parsedTime);
                 	times.add(receivedTime);
                 	timeId = receivedTime.getId();
                 }
                 
+                if (shopId == -1){
+                	System.out.println("\"" + column[1] + "\""  + " on line " + lineCounter +
+                			" was not found in the product table. This item will be skipped.");
+                	pursueWrite = false;
+                }
                 
-                bw.write(timeId + ";" + shopId + ";" + productId + ";" 
-                					+ column[3] + ";" + column[4].replace(",", ".") + ";\n");
-
+                if (productId == -1){
+                	System.out.println("\"" + column[2] + "\"" + " on line " + lineCounter +
+                			" was not found in the product table. This item will be skipped.");
+                	pursueWrite = false;
+                }
+                
+                if (pursueWrite) {
+                	bw.write(timeId + ";" + shopId + ";" + productId + ";" 
+        					+ column[3] + ";" + column[4].replace(",", ".") + ";\n");
+                }
+                
             }
 
         } catch (IOException e) {
@@ -114,7 +135,7 @@ public class CSVTransformer {
 
     }
     
-    private Time createTime(String dateString) {
+    private Time createTime(String dateString, int lineCounter) {
     	Time time = new Time();
     	
     	Date dateItem = null;
@@ -138,7 +159,8 @@ public class CSVTransformer {
             	quarterItem = "4th Quarter";
         	
 		} catch (ParseException e) {
-			System.err.println("Incorrect Date format");
+			System.out.println("Incorrect Date format on line " + lineCounter);
+			return null;
 		}
         
         time.setId(-1);

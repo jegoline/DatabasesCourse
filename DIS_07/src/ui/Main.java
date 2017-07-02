@@ -21,19 +21,25 @@ public class Main {
 			"product_dim.group_name", "product_dim.article_name");
 	private static String currentProductDim = productDims.get(0);
 
-	private static void load(String currentShopDim, String currentProductDim){
+	private static List<String> timeDims = Arrays.asList("time_dim.year", "time_dim.quarter",
+			"time_dim.month", "time_dim.date");
+	private static String currentTimeDim = timeDims.get(0);
+	
+	
+	private static void load(String currentShopDim, String currentProductDim, String currentTimeDim){
 		Connection con = DB2ConnectionManager.getInstance().getConnection();
 		PreparedStatement selectStmt = null;
 		try {
-			String selectSQL = "select sum(sales.amount), sum(sales.items_sold), %s, "
-					+ "%s, time_dim.year "
-					+ "from sales join product_dim  on sales.fk_article_id=product_dim.id "
+			String selectSQL = "select sum(sales.amount), sum(sales.items_sold), %s, %s, %s "
+					+ "from sales "
+					+ "join product_dim  on sales.fk_article_id = product_dim.id "
 					+ "join shop_dim on sales.fk_shop_id = shop_dim.id "
 					+ "join time_dim on sales.fk_time_id = time_dim.id "
-					+ "GROUP BY rollup(time_dim.year, %s, %s) "
-					+ "order by %s, time_dim.year, %s";
-			selectSQL = String.format(selectSQL, currentShopDim, currentProductDim, currentShopDim, currentProductDim,
-					currentShopDim, currentProductDim);
+					+ "GROUP BY rollup(%s, %s, %s) "
+					+ "order by %s, %s, %s";
+			selectSQL = String.format(selectSQL, currentShopDim, currentProductDim, currentTimeDim, 
+					currentTimeDim, currentShopDim, currentProductDim,
+					currentShopDim, currentTimeDim, currentProductDim);
 			selectStmt = con.prepareStatement(selectSQL);
 			System.out.println(selectSQL);
 
@@ -70,7 +76,7 @@ public class Main {
 		final int ROLL_UP = 1;
 		final int QUIT = 2;
 
-		load(currentShopDim, currentProductDim);
+		load(currentShopDim, currentProductDim, currentTimeDim);
 
 		// Erzeuge Menü
 		Menu mainMenu = new Menu("Main Menu");
@@ -103,7 +109,7 @@ public class Main {
 		final int BACK = 4;
 
 		// Maklerverwaltungsmenü
-		Menu menu = new Menu("Manage Estate Agents");
+		Menu menu = new Menu("Rollup/ Drill-down Menu");
 		menu.addEntry("Place", PLACE);
 		menu.addEntry("Time", TIME);
 		menu.addEntry("Product", PRODUCT);
@@ -115,14 +121,15 @@ public class Main {
 			switch (response) {
 			case PLACE:
 				currentShopDim = nextDim(shopDims, currentShopDim, drillDown);
-				load(currentShopDim, currentProductDim);
+				load(currentShopDim, currentProductDim, currentTimeDim);
 				break;
 			case TIME:
-
+				currentTimeDim = nextDim(timeDims, currentTimeDim, drillDown);
+				load(currentShopDim, currentProductDim, currentTimeDim);
 				break;
 			case PRODUCT:
 				currentProductDim = nextDim(productDims, currentProductDim, drillDown);
-				load(currentShopDim, currentProductDim);
+				load(currentShopDim, currentProductDim, currentTimeDim);
 				break;
 			case BACK:
 				return;
