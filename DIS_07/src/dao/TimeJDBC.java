@@ -17,8 +17,6 @@ import data.Time;
 
 public class TimeJDBC implements TransactionDAO<Time> {
 	
-	
-	
 	public Time insert(Time entry) {
 		assert entry.getId() == -1;
 		
